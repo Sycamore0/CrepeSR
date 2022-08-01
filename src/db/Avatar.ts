@@ -2,7 +2,6 @@ import { AvatarSkillTree, AvatarType, EquipRelic, LineupAvatar } from "../data/p
 import AvatarExcel from "../util/excel/AvatarExcel";
 import Logger from "../util/Logger";
 import Database from "./Database";
-
 type UID = string | number;
 const c = new Logger("Avatar");
 
@@ -76,7 +75,7 @@ export default class Avatar {
         } as unknown as Avatar;
 
         await db.set("avatars", dataObj);
-        return [ new Avatar(dataObj) ];
+        return [new Avatar(dataObj)];
     }
 
     public static async add(uid: UID, avatarId: number): Promise<Avatar> {

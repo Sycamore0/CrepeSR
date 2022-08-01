@@ -63,7 +63,7 @@ export default class Player implements Player {
 
         const db = Database.getInstance();
         const avatars = await Avatar.create(acc.uid);
-        console.log(avatars);
+
         const dataObj = {
             _id: acc.uid,
             name: acc.name,
