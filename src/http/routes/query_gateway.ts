@@ -5,7 +5,7 @@ import Config from "../../util/Config";
 import { Gateserver } from "../../data/proto/StarRail";
 
 export default function handle(req: Request, res: Response) {
-    const dataObj = Gateserver.fromJSON({
+    const dataObj = Gateserver.fromPartial({
         retcode: 0,
         msg: "OK",
         regionName: "CrepeSR",
@@ -25,7 +25,7 @@ export default function handle(req: Request, res: Response) {
     try {
         rsp = Gateserver.encode(dataObj).finish();
     } catch {
-        rsp = Gateserver.encode(Gateserver.fromJSON({
+        rsp = Gateserver.encode(Gateserver.fromPartial({
             retcode: 2,
             msg: "Internal server error",
             stopBeginTime: Date.now(),
