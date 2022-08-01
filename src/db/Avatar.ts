@@ -1,4 +1,5 @@
 import { AvatarSkillTree, AvatarType, EquipRelic } from "../data/proto/StarRail";
+import AvatarExcel from "../util/excel/AvatarExcel";
 import Logger from "../util/Logger";
 import Database from "./Database";
 
@@ -43,7 +44,7 @@ export default class Avatar {
             level: 1,
             promotion: 1,
             rank: 1,
-            skilltreeList: [],
+            skilltreeList: AvatarExcel.fromId(1001).SkillList,
             equipmentUniqueId: 20000, // EquipmentExcelTable
             equipRelicList: [],
             hp: 1000,
