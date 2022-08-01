@@ -20,7 +20,7 @@ export default async function handle(command: Command) {
         }
     } as PlayerKickOutScNotify);
 
-    // SRServer.getInstance().sessions.delete(`${Interface.target.ctx.address}:${Interface.target.ctx.port}`);
+    SRServer.getInstance().kick(Interface.target);
 
     c.log(`Kicked ${Interface.target.account.name}`);
 }

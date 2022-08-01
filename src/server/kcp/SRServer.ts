@@ -31,6 +31,13 @@ export default class SRServer {
         this.udpSocket.on('error', (e) => this.onError(e));
     }
 
+    public kick(session: Session) {
+        const client = `${session.ctx.address}:${session.ctx.port}`;
+        const rsp = new Handshake(HandshakeType.DISCONNECT).encode();
+        this.udpSocket.send(rsp, 0, rsp.byteLength, session.ctx.port, session.ctx.address);
+        this.sessions.delete(client);
+    }
+
     private async onMessage(data: Buffer, rinfo: RemoteInfo) {
         const client = `${rinfo.address}:${rinfo.port}`;
         if (data.byteLength == 20) {
