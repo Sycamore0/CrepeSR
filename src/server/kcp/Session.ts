@@ -70,7 +70,6 @@ export default class Session {
     }
 
     public send(name: PacketName, body: {}) {
-        console.log(body)
         const packet = Packet.encode(name, body);
         if (!packet) return;
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(packet.protoName);
