@@ -58,9 +58,9 @@ export default class Player implements Player {
             name: acc.name,
             token: acc.token,
             banned: false,
-        } as PlayerI
+            avatars: await Avatar.create(acc.uid)
+        } as PlayerI;
 
-        dataObj.avatars = await Avatar.create(acc.uid);
         await db.set("players", dataObj);
         return new Player(dataObj);
     }
