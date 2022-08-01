@@ -1,29 +1,20 @@
-import { GetAvatarDataCsReq, GetAvatarDataScRsp } from "../../data/proto/StarRail";
-import AvatarExcelTable from "../../data/excel/AvatarExcelTable.json";
+import { Avatar, GetAvatarDataCsReq, GetAvatarDataScRsp } from "../../data/proto/StarRail";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as GetAvatarDataCsReq;
 
+    console.log(session.player.db.avatars.map(avatar => {
+        return avatar as unknown as Avatar
+    }));
     const dataObj = {
         retcode: 0,
-        avatarList: [{
-            baseAvatarId: 1001,
-            equipmentUniqueId: 13501,
-            equipRelicList: [],
-            exp: 0,
-            level: 1,
-            promotion: 1,
-            rank: 1,
-            skilltreeList: [],
-        }],
+        avatarList: session.player.db.avatars.map(avatar => {
+            return avatar as unknown as Avatar
+        }),
         isAll: body.isGetAll
     } as GetAvatarDataScRsp;
-
-    Object.values(AvatarExcelTable).forEach(avatar => {
-        // dataObj.avatarList.push()
-    });
 
     session.send("GetAvatarDataScRsp", dataObj);
 }

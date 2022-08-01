@@ -22,6 +22,22 @@ export default class Database {
         return Database.instance;
     }
 
+    public async getAll(collection: string, query?: object) {
+        try {
+            const db = await Database.client.db();
+            const _collection = db.collection(collection);
+            if (!(await db.listCollections({ name: collection }).toArray()).length) {
+                c.warn(`Collection ${collection} does not exist. Creating...`);
+                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+            }
+            const result = query ? await _collection.find(query) : await _collection.find();
+            return result;
+        } catch (e) {
+            c.error(e as Error);
+            return null;
+        }
+    }
+
     public async get(collection: string, query?: object) {
         try {
             const db = await Database.client.db();

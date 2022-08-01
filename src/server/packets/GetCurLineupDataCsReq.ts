@@ -1,4 +1,4 @@
-import { AvatarType, GetCurLineupDataCsReq, GetCurLineupDataScRsp } from "../../data/proto/StarRail";
+import { AvatarType, GetCurLineupDataCsReq, GetCurLineupDataScRsp, LineupAvatar } from "../../data/proto/StarRail";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
@@ -6,14 +6,12 @@ export default async function handle(session: Session, packet: Packet) {
     session.send("GetCurLineupDataScRsp", {
         retcode: 0,
         lineup: {
-            avatarList: [{
-                slot: 1,
-                avatarType: AvatarType.AVATAR_FORMAL_TYPE,
-                id: 1001,
-                hp: 100,
-                sp: 100,
-                satiety: 100
-            }],
+            avatarList: session.player.db.avatars.map(avatar => {
+                const battleAvatar = avatar as unknown as LineupAvatar;
+                battleAvatar.id = avatar.baseAvatarId;
+                battleAvatar.slot = 1;
+                return battleAvatar
+            }),
             index: 1,
             isVirtual: false,
             mp: 100,

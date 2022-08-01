@@ -4,6 +4,7 @@ import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 import Player from "../../db/Player";
 import { PlayerGetTokenScRsp } from "../../data/proto/StarRail";
+
 const c = new Logger("Dispatch");
 
 interface PlayerGetTokenCsReq {

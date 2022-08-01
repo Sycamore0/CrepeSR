@@ -1,5 +1,7 @@
+import { PlayerKickOutScNotify_KickType } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
+import Avatar from "./Avatar";
 import Database from "./Database";
 const c = new Logger("Player");
 
@@ -17,12 +19,13 @@ interface PlayerI {
         hcoin: number;
         scoin: number;
         worldLevel: number;
-    }
+    };
+
+    avatars: Avatar[],
 }
 
-export default class Player {
+export default class Player implements Player {
     private constructor(public db: PlayerI) {
-
     }
 
     public static async fromUID(uid: number | string): Promise<Player | undefined> {
@@ -54,9 +57,10 @@ export default class Player {
             _id: acc.uid,
             name: acc.name,
             token: acc.token,
-            banned: false
+            banned: false,
         } as PlayerI
 
+        dataObj.avatars = await Avatar.create(acc.uid);
         await db.set("players", dataObj);
         return new Player(dataObj);
     }
