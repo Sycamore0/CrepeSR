@@ -31,7 +31,7 @@ export default class Avatar {
         if (!avatars) {
             return await Avatar.create(uid);
         }
-        return avatars;
+        return avatars.map(avatar => new Avatar(avatar));
     }
 
     public static async create(uid: string | number): Promise<Avatar[]> {
@@ -53,7 +53,7 @@ export default class Avatar {
         } as unknown as Avatar;
 
         await db.set("avatars", dataObj);
-        return [dataObj];
+        return [ new Avatar(dataObj) ];
     }
 
     public static async get(uid: string | number, baseAvatarId: number): Promise<Avatar> {

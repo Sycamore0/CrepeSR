@@ -23,13 +23,12 @@ interface PlayerI {
 
     floorId: number;
     planeId: number;
-
-    avatars: Avatar[],
     lineups: LineupInfo[]
 }
 
 export default class Player implements Player {
-    private constructor(public db: PlayerI) {
+    private constructor(public db: PlayerI, public avatars: Avatar[]) {
+        this.avatars = avatars;
     }
 
     //TODO: prob move this to a seperated class ?
@@ -42,15 +41,14 @@ export default class Player implements Player {
         const db = Database.getInstance();
         const player = await db.get("players", { _id: uid }) as unknown as PlayerI;
         if (!player) return Player.create(uid);
-        return new Player(player);
+        return new Player(player, await Avatar.fromUID(uid));
     }
 
     public static async fromToken(token: string): Promise<Player | undefined> {
         const db = Database.getInstance();
         const plr = await db.get("players", { token }) as unknown as PlayerI;
         if (!plr) return Player.fromUID((await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
-
-        return new Player(plr);
+        return new Player(plr, await Avatar.fromUID(plr._id));
     }
 
     public static async create(uid: number | string): Promise<Player | undefined> {
@@ -72,10 +70,9 @@ export default class Player implements Player {
             name: acc.name,
             token: acc.token,
             banned: false,
-            avatars: avatars,
             lineups: [
                 {
-                    avatarList: [ defaultLineupAvatar ],
+                    avatarList: [defaultLineupAvatar],
                     index: 0,
                     isVirtual: false, //TODO: find out what is this
                     leaderSlot: 0,
@@ -88,13 +85,13 @@ export default class Player implements Player {
         } as unknown as PlayerI;
 
         await db.set("players", dataObj);
-        return new Player(dataObj);
+        return new Player(dataObj, avatars);
     }
 
     public async save() {
         const db = Database.getInstance();
-        await db.update("players", { _id: this.db._id  } , this.db);
-        this.db.avatars.forEach(async avatar => {
+        await db.update("players", { _id: this.db._id }, this.db);
+        this.avatars.forEach(async avatar => {
             await avatar.save();
         });
     }

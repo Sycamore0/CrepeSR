@@ -4,10 +4,10 @@ import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
 export default async function handle(session: Session, packet: Packet) {
-    let avatars = session.player.db.avatars;
+    let avatars = session.player.avatars;
     if (!avatars) {
         avatars = await Avatar.create(session.player.db._id);
-        session.player.db.avatars = avatars;
+        session.player.avatars = avatars;
         session.player.save();
     }
 

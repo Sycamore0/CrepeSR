@@ -36,10 +36,10 @@ export default async function handle(session: Session, packet: Packet) {
         }
     }
 
-    let avatars = plr!.db.avatars;
+    let avatars = plr!.avatars;
     if (!avatars) {
         avatars = await Avatar.create(plr!.db._id);
-        plr!.db.avatars = avatars;
+        plr!.avatars = avatars;
     }
 
     let lineups = plr!.db.lineups;
