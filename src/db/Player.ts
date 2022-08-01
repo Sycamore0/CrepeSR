@@ -26,7 +26,7 @@ interface PlayerI {
     curLineupIndex: number;
 }
 
-interface LineupI{
+interface LineupI {
     isVirtual: boolean;
     leaderSlot: number;
     index: number;
@@ -34,7 +34,7 @@ interface LineupI{
 }
 
 export default class Player implements Player {
-    private constructor(public db: PlayerI, public avatars: Avatar[]) {}
+    private constructor(public db: PlayerI, public avatars: Avatar[]) { }
 
     public static async fromUID(uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
@@ -85,7 +85,7 @@ export default class Player implements Player {
             }
         } as unknown as PlayerI;
 
-        for(let i = 0; i < 8; i++){
+        for (let i = 0; i < 8; i++) {
             dataObj.lineups.push({
                 isVirtual: false,
                 leaderSlot: 0,
@@ -100,26 +100,30 @@ export default class Player implements Player {
 
     public getLineup(curIndex: number): LineupAvatar[] {
         const lineupAvatars: LineupAvatar[] = [];
-        for(const avatar of this.avatars){
-            if(avatar.lineupIndex !== curIndex){
-                continue;
-            }
-            const lineupAvatar = avatar as unknown as LineupAvatar;
-            lineupAvatar.slot = avatar.lineupSlot;
-            lineupAvatar.id = avatar.baseAvatarId;
-            lineupAvatars.push(lineupAvatar);
+        let slot: number = 0;
+        for (const avatar of this.avatars) {
+            if (avatar.lineupIndex !== curIndex) continue;
+
+            lineupAvatars.push({
+                avatarType: avatar.avatarType,
+                hp: avatar.hp,
+                id: avatar.baseAvatarId,
+                satiety: avatar.satiety,
+                slot: slot++,
+                sp: avatar.sp
+            } as LineupAvatar);
         }
         return lineupAvatars;
     }
 
     public async save() {
         const cloned = Object.assign({}, this) as any;
-        for(const lineup of cloned.db.lineups)
-        {
+        for (const lineup of cloned.db.lineups) {
             delete lineup.avatarList;
         }
         delete cloned.db;
         delete cloned.avatars;
+        delete cloned._id;
         const db = Database.getInstance();
         await db.update("players", { _id: this.db._id }, cloned);
         this.avatars.forEach(async avatar => {
