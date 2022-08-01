@@ -119,6 +119,7 @@ export default class Player implements Player {
             delete lineup.avatarList;
         }
         delete cloned.db;
+        delete cloned.avatars;
         const db = Database.getInstance();
         await db.update("players", { _id: this.db._id }, cloned);
         this.avatars.forEach(async avatar => {
