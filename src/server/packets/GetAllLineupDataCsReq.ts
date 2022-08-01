@@ -5,6 +5,6 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     session.send("GetAllLineupDataScRsp", {
         retcode: 0,
-        lineupList: []
+        lineupList: session.player.db.lineups
     } as unknown as GetAllLineupDataScRsp);
 }

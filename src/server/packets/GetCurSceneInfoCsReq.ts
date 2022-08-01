@@ -6,13 +6,13 @@ export default async function handle(session: Session, packet: Packet) {
     session.send("GetCurSceneInfoScRsp", {
         retcode: 0,
         scene: {
-            planeId: 10000,
-            floorId: 10000000,
+            planeId: session.player.db.planeId,
+            floorId: session.player.db.floorId,
             entityList: [],
             entityBuffList: [],
-            entryId: 10001,
+            entryId: 10001, //TODO: hardcoded, find out what does this mean
             envBuffList: [],
-            gameModeType: 1,
+            gameModeType: 1, //TODO: hardcoded, find out what does this mean
             lightenSectionList: []
         },
     } as unknown as GetCurSceneInfoScRsp);

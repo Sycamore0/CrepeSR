@@ -1,4 +1,5 @@
-import { PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import { LineupAvatar, LineupInfo, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import Avatar from "../../db/Avatar";
 import Player from "../../db/Player";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
@@ -33,8 +34,39 @@ export default async function handle(session: Session, packet: Packet) {
             stamina: 100,
             worldLevel: 1,
         }
-        plr!.save();
     }
+
+    let avatars = plr!.db.avatars;
+    if (!avatars) {
+        avatars = await Avatar.create(plr!.db._id);
+        plr!.db.avatars = avatars;
+    }
+
+    let lineups = plr!.db.lineups;
+    if(!lineups){
+        let slot = 0;
+        lineups = [
+            {
+                avatarList: avatars.map(avatar => {
+                    const lineupAvatar = avatar as unknown as LineupAvatar;
+                    lineupAvatar.id = avatar.baseAvatarId;
+                    lineupAvatar.slot = slot++;
+                    return lineupAvatar;
+                }),
+                index: 0,
+                isVirtual: false, //TODO: find out what is this
+                leaderSlot: 0,
+                mp: 0, //TODO: find out what is this
+                name: "Default",
+            } as LineupInfo
+        ];
+        plr!.db.lineups = lineups;
+    }
+
+    if(!plr!.db.floorId) plr!.db.floorId = 10000000;
+    if(!plr!.db.planeId) plr!.db.planeId = 10000;
+
+    plr!.save();
 
     session.send("PlayerLoginScRsp", {
         basicInfo: plr!.db.basicInfo as PlayerBasicInfo,

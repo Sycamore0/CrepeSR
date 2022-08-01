@@ -1,4 +1,4 @@
-import { PlayerKickOutScNotify_KickType } from "../data/proto/StarRail";
+import { LineupAvatar, LineupInfo } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Avatar from "./Avatar";
@@ -21,11 +21,20 @@ interface PlayerI {
         worldLevel: number;
     };
 
+    floorId: number;
+    planeId: number;
+
     avatars: Avatar[],
+    lineups: LineupInfo[]
 }
 
 export default class Player implements Player {
     private constructor(public db: PlayerI) {
+    }
+
+    //TODO: prob move this to a seperated class ?
+    public getLineup(index: number): LineupInfo | undefined {
+        return this.db.lineups.find(lineup => lineup.index == index);
     }
 
     public static async fromUID(uid: number | string): Promise<Player | undefined> {
@@ -51,15 +60,32 @@ export default class Player implements Player {
             c.warn(`Account ${uid} not found`);
             return;
         }
+
         const db = Database.getInstance();
+        const avatars = await Avatar.create(acc.uid);
+        const defaultLineupAvatar = avatars[0] as unknown as LineupAvatar;
+        defaultLineupAvatar.id = avatars[0].baseAvatarId;
+        defaultLineupAvatar.slot = 0; // Default team only have 1 member
 
         const dataObj = {
             _id: acc.uid,
             name: acc.name,
             token: acc.token,
             banned: false,
-            avatars: await Avatar.create(acc.uid)
-        } as PlayerI;
+            avatars: avatars,
+            lineups: [
+                {
+                    avatarList: [ defaultLineupAvatar ],
+                    index: 0,
+                    isVirtual: false, //TODO: find out what is this
+                    leaderSlot: 0,
+                    mp: 0, //TODO: find out what is this
+                    name: "Default",
+                } as LineupInfo
+            ],
+            floorId: 10000000,
+            planeId: 10000,
+        } as unknown as PlayerI;
 
         await db.set("players", dataObj);
         return new Player(dataObj);
@@ -68,5 +94,8 @@ export default class Player implements Player {
     public async save() {
         const db = Database.getInstance();
         await db.update("players", { _id: this.db._id  } , this.db);
+        this.db.avatars.forEach(async avatar => {
+            await avatar.save();
+        });
     }
 }
