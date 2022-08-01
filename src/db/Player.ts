@@ -20,35 +20,37 @@ interface PlayerI {
         scoin: number;
         worldLevel: number;
     };
-
     floorId: number;
     planeId: number;
-    lineups: LineupInfo[]
+    lineups: LineupI[];
+    curLineupIndex: number;
+}
+
+interface LineupI{
+    isVirtual: boolean;
+    leaderSlot: number;
+    index: number;
+    name: string;
 }
 
 export default class Player implements Player {
-    private constructor(public db: PlayerI, public avatars: Avatar[]) {
-        this.avatars = avatars;
-    }
-
-    //TODO: prob move this to a seperated class ?
-    public getLineup(index: number): LineupInfo | undefined {
-        return this.db.lineups.find(lineup => lineup.index == index);
-    }
+    private constructor(public db: PlayerI, public avatars: Avatar[]) {}
 
     public static async fromUID(uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const db = Database.getInstance();
         const player = await db.get("players", { _id: uid }) as unknown as PlayerI;
         if (!player) return Player.create(uid);
-        return new Player(player, await Avatar.fromUID(uid));
+        const avatars = await Avatar.fromUID(uid);
+        return new Player(player, avatars);
     }
 
     public static async fromToken(token: string): Promise<Player | undefined> {
         const db = Database.getInstance();
         const plr = await db.get("players", { token }) as unknown as PlayerI;
         if (!plr) return Player.fromUID((await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
-        return new Player(plr, await Avatar.fromUID(plr._id));
+        const avatars = await Avatar.fromUID(plr._id);
+        return new Player(plr, avatars);
     }
 
     public static async create(uid: number | string): Promise<Player | undefined> {
@@ -61,36 +63,49 @@ export default class Player implements Player {
 
         const db = Database.getInstance();
         const avatars = await Avatar.create(acc.uid);
-        const defaultLineupAvatar = avatars[0] as unknown as LineupAvatar;
-        defaultLineupAvatar.id = avatars[0].baseAvatarId;
-        defaultLineupAvatar.slot = 0; // Default team only have 1 member
-
+        console.log(avatars);
         const dataObj = {
             _id: acc.uid,
             name: acc.name,
             token: acc.token,
             banned: false,
-            lineups: [
-                {
-                    avatarList: [defaultLineupAvatar],
-                    index: 0,
-                    isVirtual: false, //TODO: find out what is this
-                    leaderSlot: 0,
-                    mp: 0, //TODO: find out what is this
-                    name: "Default",
-                } as LineupInfo
-            ],
+            lineups: [],
             floorId: 10000000,
             planeId: 10000,
+            curLineupIndex: 0,
+            basicInfo: {
+                exp: 0,
+                level: 1,
+                hcoin: 0,
+                mcoin: 0,
+                nickname: acc.name,
+                scoin: 0,
+                stamina: 100,
+                worldLevel: 1,
+            }
         } as unknown as PlayerI;
+
+        for(let i = 0; i < 8; i++){
+            dataObj.lineups.push({
+                isVirtual: false,
+                leaderSlot: 0,
+                index: i,
+                name: `Default ${i}`,
+            });
+        }
 
         await db.set("players", dataObj);
         return new Player(dataObj, avatars);
     }
 
     public async save() {
+        const cloned = Object.assign({}, this) as any;
+        for(const lineup of cloned.db.lineups)
+        {
+            delete lineup.avatarList;
+        }
         const db = Database.getInstance();
-        await db.update("players", { _id: this.db._id }, this.db);
+        await db.update("players", { _id: this.db._id }, cloned);
         this.avatars.forEach(async avatar => {
             await avatar.save();
         });
