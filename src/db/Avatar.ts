@@ -78,8 +78,8 @@ export default class Avatar {
             hp: 1000,
             sp: 1000,
             satiety: 100,
-            lineupSlot: 0, 
-            lineupIndex: 0
+            lineupSlot: -1, //TODO: proper lineup changing, im not handling this lmao
+            lineupIndex: -1
         } as unknown as Avatar;
 
         await db.set("avatars", dataObj);
