@@ -27,11 +27,13 @@ export default class Avatar {
 
     public static async fromUID(uid: string | number): Promise<Avatar[]> {
         const db = Database.getInstance();
-        const avatars = await db.getAll("avatars", { ownerUid: Number(uid) }) as unknown as Avatar[];
-        if (!avatars) {
+        const avatarsDb = await db.getAll("avatars", { ownerUid: Number(uid) }) as unknown as Avatar[];
+        if (!avatarsDb) {
             return await Avatar.create(uid);
         }
-        return avatars.map(avatar => new Avatar(avatar));
+        const avatars: Avatar[] = [];
+        avatarsDb.forEach(avatar => avatars.push(new Avatar(avatar)));
+        return avatars;
     }
 
     public static async create(uid: string | number): Promise<Avatar[]> {

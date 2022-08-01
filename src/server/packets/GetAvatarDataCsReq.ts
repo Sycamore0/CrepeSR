@@ -15,7 +15,7 @@ export default async function handle(session: Session, packet: Packet) {
 
     const dataObj = {
         retcode: 0,
-        avatarList: avatars.map(avatar => avatar as Avatar),
+        avatarList: avatars,
         isAll: body.isGetAll
     } as GetAvatarDataScRsp;
 
