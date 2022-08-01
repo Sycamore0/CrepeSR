@@ -56,7 +56,7 @@ export default class ProtoFactory {
             }
         }
 
-        c.debug(`Initialized with " ${messageTypeMap.size} types`);
+        c.debug(`Initialized with ${messageTypeMap.size} types`);
 
         //c.log(this.getName(types.PlayerLoginScRsp))
         return;
