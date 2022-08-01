@@ -1,8 +1,4 @@
 {
-  "devDependencies": {
-    "ts-node-dev": "^2.0.0",
-    "typescript": "^4.7.4"
-  },
   "scripts": {
     "start": "ts-node-dev src/index.ts --respawn --transpile-only"
   },
@@ -13,6 +9,8 @@
     "express": "^4.18.1",
     "mongodb": "^4.8.0",
     "node-kcp-token": "github:memetrollsxd/node-kcp",
-    "protobufjs": "^7.0.0"
+    "protobufjs": "^7.0.0",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^4.7.4"
   }
 }
