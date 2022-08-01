@@ -2,22 +2,16 @@ import { GetAvatarDataCsReq, GetAvatarDataScRsp } from "../../data/proto/StarRai
 import AvatarExcelTable from "../../data/excel/AvatarExcelTable.json";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
+import Avatar from "../../db/Avatar";
 
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as GetAvatarDataCsReq;
 
+    const avatar = await Avatar.fromUID(session.player.db._id);
+
     const dataObj = {
         retcode: 0,
-        avatarList: [{
-            baseAvatarId: 1001,
-            equipmentUniqueId: 13501,
-            equipRelicList: [],
-            exp: 0,
-            level: 1,
-            promotion: 1,
-            rank: 1,
-            skilltreeList: [],
-        }],
+        avatarList: avatar.map(av => av.data),
         isAll: body.isGetAll
     } as GetAvatarDataScRsp;
 

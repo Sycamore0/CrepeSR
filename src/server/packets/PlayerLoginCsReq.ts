@@ -1,4 +1,5 @@
-import { PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import { AvatarType, ExtraLineupType, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import Avatar from "../../db/Avatar";
 import Player from "../../db/Player";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
@@ -21,9 +22,11 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as PlayerLoginCsReq;
 
-    const plr = await Player.fromUID(session.player.db._id)!;
-    if (!plr!.db.basicInfo) {
-        plr!.db.basicInfo = {
+    const plr = await Player.fromUID(session.player.db._id);
+    if (!plr) return;
+
+    if (!plr.db.basicInfo) {
+        plr.db.basicInfo = {
             exp: 0,
             level: 1,
             hcoin: 0,
@@ -33,7 +36,40 @@ export default async function handle(session: Session, packet: Packet) {
             stamina: 100,
             worldLevel: 1,
         }
-        plr!.save();
+        plr.save();
+    }
+
+    if (!plr.db.lineup) {
+        Avatar.create(plr.db._id);
+        plr.db.lineup = {
+            curIndex: 0,
+            lineups: [{
+                avatarList: [{
+                    avatarType: AvatarType.AVATAR_FORMAL_TYPE,
+                    hp: 10000,
+                    sp: 10000,
+                    satiety: 100,
+                    slot: 0,
+                    id: 1001
+                }],
+                planeId: 10001,
+                isVirtual: false,
+                name: "Default Party",
+                index: 0,
+                leaderSlot: 0,
+                mp: 100,
+                extraLineupType: ExtraLineupType.LINEUP_NONE
+            }]
+        }
+        plr.save();
+    }
+
+    if (!plr.db.posData) {
+        plr.db.posData = {
+            floorID: 10001001,
+            planeID: 10001
+        }
+        plr.save();
     }
 
     session.send("PlayerLoginScRsp", {

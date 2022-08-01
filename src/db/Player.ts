@@ -1,3 +1,4 @@
+import { LineupInfo, Vector } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Database from "./Database";
@@ -17,6 +18,15 @@ interface PlayerI {
         hcoin: number;
         scoin: number;
         worldLevel: number;
+    }
+    lineup: {
+        curIndex: number;
+        lineups: LineupInfo[];
+    }
+    posData: {
+        floorID: number;
+        planeID: number;
+        pos?: Vector;
     }
 }
 

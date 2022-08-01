@@ -3,11 +3,12 @@ import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
 export default async function handle(session: Session, packet: Packet) {
+    const posData = session.player.db.posData;
     session.send("GetCurSceneInfoScRsp", {
         retcode: 0,
         scene: {
-            planeId: 10000,
-            floorId: 10000000,
+            planeId: posData.planeID,
+            floorId: posData.floorID,
             entityList: [],
             entityBuffList: [],
             entryId: 10001,
