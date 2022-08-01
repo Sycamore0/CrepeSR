@@ -98,6 +98,20 @@ export default class Player implements Player {
         return new Player(dataObj, avatars);
     }
 
+    public getLineup(curIndex: number): LineupAvatar[] {
+        const lineupAvatars: LineupAvatar[] = [];
+        for(const avatar of this.avatars){
+            if(avatar.lineupIndex !== curIndex){
+                continue;
+            }
+            const lineupAvatar = avatar as unknown as LineupAvatar;
+            lineupAvatar.slot = avatar.lineupSlot;
+            lineupAvatar.id = avatar.baseAvatarId;
+            lineupAvatars.push(lineupAvatar);
+        }
+        return lineupAvatars;
+    }
+
     public async save() {
         const cloned = Object.assign({}, this) as any;
         for(const lineup of cloned.db.lineups)

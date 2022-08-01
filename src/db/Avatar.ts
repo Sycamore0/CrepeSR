@@ -27,22 +27,6 @@ export default class Avatar {
         Object.assign(this, _fromdb);
     }
 
-    public static async getLineup(uid: UID, lineupIndex: number): Promise<LineupAvatar[]> {
-        const db = Database.getInstance();
-        const avatarsDb = await db.getAll("avatars", { ownerUid: Number(uid), lineupIndex: lineupIndex }) as unknown as Avatar[];
-        const avatars: LineupAvatar[] = [];
-        if (!avatarsDb) {
-            return [];
-        }
-        avatarsDb.forEach(avatar => {
-            const lineupAvatar = avatar as unknown as LineupAvatar;
-            lineupAvatar.slot = avatar.lineupSlot;
-            lineupAvatar.id = avatar.baseAvatarId;
-            avatars.push(lineupAvatar);
-        });
-        return avatars;
-    }
-
     public static async fromUID(uid: UID): Promise<Avatar[]> {
         const db = Database.getInstance();
         const avatarsDb = await db.getAll("avatars", { ownerUid: Number(uid) }) as unknown as Avatar[];

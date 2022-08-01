@@ -7,7 +7,7 @@ export default async function handle(session: Session, packet: Packet) {
     const lineups: LineupInfo[] = [];
     for(const lineup of session.player.db.lineups) {
         const lineupInfo = lineup as unknown as LineupInfo;
-        lineupInfo.avatarList = await Avatar.getLineup(session.player.db._id, lineupInfo.index);
+        lineupInfo.avatarList = session.player.getLineup(lineupInfo.index)!;
         lineups.push(lineupInfo);
     }
     session.send("GetAllLineupDataScRsp", {
