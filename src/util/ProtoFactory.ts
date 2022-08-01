@@ -13,10 +13,10 @@ class MessageType<T> {
     // "toJSON": (message: T)=> unknown
     //you can add more fields here from the generated types
     //fromjson etc...
-};
+}
 
-var messageTypeMap = new Map<PacketName, MessageType<any>>();
-var messageTypeMapReversed = new Map<MessageType<any>, PacketName>();
+const messageTypeMap = new Map<PacketName, MessageType<any>>();
+const messageTypeMapReversed = new Map<MessageType<any>, PacketName>();
 
 function send<Class extends MessageType<T>, T>(type: Class, data: T) {
     console.log(type.encode(data).finish())
@@ -44,7 +44,7 @@ export default class ProtoFactory {
     static init() {
         //iterate over everything in types and check if they are a MessageType
         for (const key of Object.keys(types)) {
-            let value = types[key as keyof typeof types];
+            const value = types[key as keyof typeof types];
             if (isMessageType(value)) {
                 if (Object.values(CmdID).includes(key)) {
                     messageTypeMap.set(key as PacketName, value);

@@ -19,7 +19,7 @@ const retWarn = (msg: string) => c.warn(msg);
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as PlayerGetTokenCsReq;
 
-    let dataObj = {
+    const dataObj = {
         retcode: 0,
         secretKeySeed: 0
     } as PlayerGetTokenScRsp;
