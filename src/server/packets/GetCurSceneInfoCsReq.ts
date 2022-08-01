@@ -6,8 +6,8 @@ export default async function handle(session: Session, packet: Packet) {
     session.send("GetCurSceneInfoScRsp", {
         retcode: 0,
         scene: {
-            planeId: session.player.db.planeId,
-            floorId: session.player.db.floorId,
+            planeId: session.player.db.planeId || 10000,
+            floorId: session.player.db.floorId || 10000000,
             entityList: [],
             entityBuffList: [],
             entryId: 10001, //TODO: hardcoded, find out what does this mean

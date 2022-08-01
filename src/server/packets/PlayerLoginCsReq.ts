@@ -23,27 +23,29 @@ export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as PlayerLoginCsReq;
 
     const plr = await Player.fromUID(session.player.db._id)!;
-    if (!plr!.db.basicInfo) {
-        plr!.db.basicInfo = {
+    if (!plr) return;
+    
+    if (!plr.db.basicInfo) {
+        plr.db.basicInfo = {
             exp: 0,
             level: 1,
             hcoin: 0,
             mcoin: 0,
-            nickname: plr!.db.name,
+            nickname: plr.db.name,
             scoin: 0,
             stamina: 100,
             worldLevel: 1,
         }
     }
 
-    let avatars = plr!.avatars;
+    let avatars = plr.avatars;
     if (!avatars) {
-        avatars = await Avatar.create(plr!.db._id);
-        plr!.avatars = avatars;
+        avatars = await Avatar.create(plr.db._id);
+        plr.avatars = avatars;
     }
 
-    let lineups = plr!.db.lineups;
-    if(!lineups){
+    let lineups = plr.db.lineups;
+    if (!lineups) {
         let slot = 0;
         lineups = [
             {
@@ -60,16 +62,16 @@ export default async function handle(session: Session, packet: Packet) {
                 name: "Default",
             } as LineupInfo
         ];
-        plr!.db.lineups = lineups;
+        plr.db.lineups = lineups;
     }
 
-    if(!plr!.db.floorId) plr!.db.floorId = 10000000;
-    if(!plr!.db.planeId) plr!.db.planeId = 10000;
+    if (!plr.db.floorId) plr.db.floorId = 10000000;
+    if (!plr.db.planeId) plr.db.planeId = 10000;
 
-    plr!.save();
+    plr.save();
 
     session.send("PlayerLoginScRsp", {
-        basicInfo: plr!.db.basicInfo as PlayerBasicInfo,
+        basicInfo: plr.db.basicInfo as PlayerBasicInfo,
         isNewPlayer: false,
         stamina: 100,
         retcode: 0,

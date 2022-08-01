@@ -82,7 +82,7 @@ export default class Player implements Player {
             ],
             floorId: 10000000,
             planeId: 10000,
-        } as unknown as PlayerI;
+        } as PlayerI;
 
         await db.set("players", dataObj);
         return new Player(dataObj, avatars);
