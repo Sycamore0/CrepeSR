@@ -1,8 +1,10 @@
+import Session from "../server/kcp/Session";
 import { ExtraLineupType, HeroBasicType, LineupInfo, Vector } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Avatar from "./Avatar";
 import Database from "./Database";
+import { Scene } from "../game/Scene";
 const c = new Logger("Player");
 
 export interface LineupI {
@@ -40,30 +42,33 @@ interface PlayerI {
     posData: {
         floorID: number;
         planeID: number;
-        pos?: Vector;
+        pos: Vector;
     }
 }
 
 export default class Player {
-    public readonly uid: number;
-    private constructor(public db: PlayerI) {
+    public readonly uid: number
+    public readonly scene: Scene;
+
+    private constructor(readonly session: Session, public db: PlayerI) {
         this.uid = db._id;
+        this.scene = new Scene(this);
     }
 
-    public static async fromUID(uid: number | string): Promise<Player | undefined> {
+    public static async fromUID(session: Session, uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const db = Database.getInstance();
         const player = await db.get("players", { _id: uid }) as unknown as PlayerI;
-        if (!player) return Player.create(uid);
-        return new Player(player);
+        if (!player) return Player.create(session, uid);
+        return new Player(session, player);
     }
 
-    public static async fromToken(token: string): Promise<Player | undefined> {
+    public static async fromToken(session: Session, token: string): Promise<Player | undefined> {
         const db = Database.getInstance();
         const plr = await db.get("players", { token }) as unknown as PlayerI;
-        if (!plr) return Player.fromUID((await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
+        if (!plr) return Player.fromUID(session, (await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
 
-        return new Player(plr);
+        return new Player(session, plr);
     }
 
     public async getLineup(lineupIndex?: number): Promise<LineupInfo> {
@@ -89,7 +94,7 @@ export default class Player {
         this.db.lineup.curIndex = curIndex;
     }
 
-    public static async create(uid: number | string): Promise<Player | undefined> {
+    public static async create(session: Session, uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const acc = await Account.fromUID(uid);
         if (!acc) {
@@ -119,7 +124,12 @@ export default class Player {
             },
             posData: {
                 floorID: 10001001,
-                planeID: 10001
+                planeID: 10001,
+                pos: {
+                    x: 0,
+                    y: 439,
+                    z: -45507
+                }
             },
             banned: false
         } as PlayerI
@@ -141,13 +151,16 @@ export default class Player {
             lineups: {}
         }
         for (let i = 0; i <= LINEUPS; i++) {
-            let copy = baseLineup;
+            const copy = baseLineup;
             copy.index = slot++;
             dataObj.lineup.lineups[i] = copy;
         }
 
+        await Avatar.create(uid, 1001, 0);
+        
+
         await db.set("players", dataObj);
-        return new Player(dataObj);
+        return new Player(session, dataObj);
     }
 
     public async save() {

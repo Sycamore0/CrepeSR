@@ -10,7 +10,7 @@ export default class Avatar {
 
     }
 
-    public static async create(uid: UID, baseAvatarId: number = 1001): Promise<Avatar> {
+    public static async create(uid: UID, baseAvatarId: number = 1001, slot: number = -1): Promise<Avatar> {
         const db = Database.getInstance();
         // Check if already exists
         const existing = await Avatar.fromUID(uid, baseAvatarId);
@@ -29,7 +29,7 @@ export default class Avatar {
             hp: 10000,
             id: baseAvatarId,
             satiety: 100,
-            slot: -1,
+            slot: slot,
             sp: 10000
         });
         db.set("avatars", avatar);

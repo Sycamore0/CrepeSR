@@ -22,7 +22,7 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as PlayerLoginCsReq;
 
-    const plr = await Player.fromUID(session.player.db._id);
+    const plr = await Player.fromUID(session, session.player.db._id);
     if (!plr) return;
 
     if (!plr.db.heroBasicType) {
@@ -45,7 +45,7 @@ export default async function handle(session: Session, packet: Packet) {
     }
 
     if (!plr.db.lineup) {
-        Avatar.create(plr.db._id);
+        await Avatar.create(plr.db._id, 1001, 0);
         const baseLineup = {
             avatarList: [1001],
             extraLineupType: ExtraLineupType.LINEUP_NONE,
@@ -63,7 +63,7 @@ export default async function handle(session: Session, packet: Packet) {
             lineups: {}
         }
         for (let i = 0; i <= LINEUPS; i++) {
-            let copy = baseLineup;
+            const copy = baseLineup;
             copy.index = slot++;
             plr.db.lineup.lineups[i] = copy;
         }
@@ -73,7 +73,12 @@ export default async function handle(session: Session, packet: Packet) {
     if (!plr.db.posData) {
         plr.db.posData = {
             floorID: 10001001,
-            planeID: 10001
+            planeID: 10001,
+            pos: {
+                x: 0,
+                y: 439,
+                z: -45507
+            }
         }
         plr.save();
     }
