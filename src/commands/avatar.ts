@@ -21,7 +21,7 @@ export default async function handle(command: Command) {
             if (!avatarId) return c.log("No avatarId specified");
             // Check if it already exists
             const avatar = await Avatar.fromUID(uid, avatarId);
-            if (avatar) return c.log(`Avatar ${avatarId} already exists`);
+            if (avatar.length > 0) return c.log(`Avatar ${avatarId} already exists`);
             Avatar.create(uid, avatarId).then(a => c.log(`Avatar ${avatarId} added to ${a.ownerUid}`));
             break;
         case "remove":
