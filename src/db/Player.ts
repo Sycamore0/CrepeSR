@@ -55,7 +55,16 @@ export default class Player {
         return new Player(session, plr);
     }
 
-    public static async create(session: Session, uid: number | string): Promise<Player | undefined> {
+    public getCurLineup() {
+        return this.db.lineup.lineups[this.db.lineup.curIndex];
+    }
+
+    public setCurLineup(lineup: LineupInfo, curIndex: number = this.db.lineup.curIndex) {
+        this.db.lineup.lineups[curIndex] = lineup;
+        this.db.lineup.curIndex = curIndex;
+    }
+
+    public static async create(uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const acc = await Account.fromUID(uid);
         if (!acc) {

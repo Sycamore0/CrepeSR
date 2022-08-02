@@ -29,4 +29,6 @@ export default async function handle(command: Command) {
             Avatar.remove(uid, avatarId).then(() => c.log(`Avatar ${avatarId} removed from ${uid}`));
             break;
     }
+
+    Interface.target.sync();
 }

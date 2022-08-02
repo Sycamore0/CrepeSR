@@ -8,6 +8,8 @@ import Logger, { VerboseLevel } from '../../util/Logger';
 import defaultHandler from '../packets/PacketHandler';
 import Account from '../../db/Account';
 import Player from '../../db/Player';
+import { PlayerSyncScNotify } from '../../data/proto/StarRail';
+import Avatar from '../../db/Avatar';
 
 function r(...args: string[]) {
     return fs.readFileSync(resolve(__dirname, ...args));
@@ -66,6 +68,18 @@ export default class Session {
 
             defaultHandler(this, packet);
         });
+    }
+
+    public async sync() {
+        const avatars = await Avatar.fromUID(this.player.db._id);
+        this.send("PlayerSyncScNotify", {
+            avatarSync: {
+                avatarList: avatars.map(x => x.data),
+            },
+            basicInfo: this.player.db.basicInfo
+        } as PlayerSyncScNotify);
+        
+        this.player.save();
     }
 
     public send(name: PacketName, body: {}) {
