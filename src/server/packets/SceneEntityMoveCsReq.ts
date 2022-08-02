@@ -5,12 +5,10 @@ import Session from "../kcp/Session";
 
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as SceneEntityMoveCsReq;
-    console.log(body.entryId);
     if(session.player.scene.entryId !== body.entryId){
         return;
     }
     for(const entityMotion of body.entityMotionList){
-        console.log(entityMotion.entityId);
         const entity = session.player.scene.entities.get(entityMotion.entityId);
         if(!entity){ //what??
             session.player.scene.despawnEntity(entityMotion.entityId);
