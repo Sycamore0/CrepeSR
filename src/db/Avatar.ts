@@ -1,10 +1,12 @@
-import { Avatar as AvatarI } from '../data/proto/StarRail';
+import { Avatar as AvatarI, AvatarType, LineupAvatar } from '../data/proto/StarRail';
+import Logger from '../util/Logger';
 import Database from './Database';
-
+import Player, { LineupI } from './Player';
+const c = new Logger("Avatar");
 type UID = number | string;
 
 export default class Avatar {
-    private constructor(public ownerUid: UID, public data: AvatarI) {
+    private constructor(public ownerUid: UID, public data: AvatarI, public lineup: LineupAvatar) {
 
     }
 
@@ -22,6 +24,13 @@ export default class Avatar {
             promotion: 1,
             rank: 1,
             skilltreeList: [],
+        }, {
+            avatarType: AvatarType.AVATAR_FORMAL_TYPE,
+            hp: 10000,
+            id: baseAvatarId,
+            satiety: 100,
+            slot: -1,
+            sp: 10000
         });
         db.set("avatars", avatar);
         return avatar;
@@ -32,6 +41,23 @@ export default class Avatar {
         if (baseAvatarId) query['data.baseAvatarId'] = baseAvatarId;
         const db = Database.getInstance();
         return await db.getAll("avatars", query) as unknown as Avatar[];
+    }
+
+    public static async fromLineup(uid: UID, lineup: LineupI): Promise<Avatar[]> {
+        try {
+            const avatarList: Array<Avatar> = [];
+
+            for (let i = 0; i < lineup.avatarList.length; i++) {
+                const avatarId = lineup.avatarList[i];
+                const avatar = await Avatar.fromUID(uid, avatarId);
+                avatarList.push(avatar[0]);
+            }
+
+            return await Promise.all(avatarList);
+        } catch (e) {
+            c.error(e as Error);
+            return [];
+        }
     }
 
     public static async remove(ownerUid: UID, baseAvatarId: number): Promise<void> {

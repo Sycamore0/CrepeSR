@@ -1,9 +1,20 @@
-import { LineupInfo, Vector } from "../data/proto/StarRail";
+import { ExtraLineupType, LineupInfo, Vector } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
+import Avatar from "./Avatar";
 import Database from "./Database";
 const c = new Logger("Player");
 
+export interface LineupI {
+    avatarList: number[];
+    isVirtual: boolean;
+    planeId: number;
+    mp: number;
+    leaderSlot: number;
+    index: number;
+    extraLineupType: ExtraLineupType;
+    name: string;
+}
 interface PlayerI {
     _id: number;
     name: string;
@@ -21,7 +32,9 @@ interface PlayerI {
     }
     lineup: {
         curIndex: number;
-        lineups: LineupInfo[];
+        lineups: {
+            [key: number]: LineupI;
+        };
     }
     posData: {
         floorID: number;
@@ -31,8 +44,9 @@ interface PlayerI {
 }
 
 export default class Player {
+    public readonly uid: number;
     private constructor(public db: PlayerI) {
-
+        this.uid = db._id;
     }
 
     public static async fromUID(uid: number | string): Promise<Player | undefined> {
@@ -51,12 +65,26 @@ export default class Player {
         return new Player(plr);
     }
 
-    public getCurLineup() {
-        return this.db.lineup.lineups[this.db.lineup.curIndex];
+    public async getLineup(lineupIndex?: number): Promise<LineupInfo> {
+        const curIndex = this.db.lineup.curIndex;
+        const lineup = this.db.lineup.lineups[lineupIndex || curIndex];
+        const avatars = await Avatar.fromLineup(this.uid, lineup);
+        let slot = 0;
+        avatars.forEach(avatar => {
+            avatar.lineup.slot = slot++;
+        });
+        return {
+            ...lineup,
+            avatarList: avatars.map(x => x.lineup)
+        }
     }
 
-    public setCurLineup(lineup: LineupInfo, curIndex: number = this.db.lineup.curIndex) {
-        this.db.lineup.lineups[curIndex] = lineup;
+    public setLineup(lineup: LineupInfo, index?: number, curIndex: number = this.db.lineup.curIndex) {
+        this.db.lineup.lineups[index || curIndex] = {
+            ...lineup,
+            avatarList: lineup.avatarList.map(x => x.id)
+        };
+
         this.db.lineup.curIndex = curIndex;
     }
 
@@ -82,6 +110,6 @@ export default class Player {
 
     public async save() {
         const db = Database.getInstance();
-        await db.update("players", { _id: this.db._id  } , this.db);
+        await db.update("players", { _id: this.db._id }, this.db);
     }
 }

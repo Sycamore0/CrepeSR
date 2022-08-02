@@ -8,10 +8,15 @@ export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as JoinLineupCsReq;
     session.send("JoinLineupScRsp", { retcode: 0 });
 
-    let lineup = session.player.getCurLineup();
+    let lineup = await session.player.getLineup();
     const slot = body.slot || 0;
-    const avatar = await Avatar.fromUID(session.player.db._id, body.baseAvatarId);
-    if (avatar.length === 0) return session.c.warn(`Avatar ${body.baseAvatarId} not found`);
+    const avatarList = [];
+    for (const avatarId in lineup) {
+        const avatar = await Avatar.fromUID(session.player.db._id, Number(avatarId));
+        if (avatar.length === 0) return session.c.warn(`Avatar ${body.baseAvatarId} not found`);
+        if (avatar) avatarList.push(avatar[0]);
+    }
+
     lineup.avatarList[slot] = {
         avatarType: AvatarType.AVATAR_FORMAL_TYPE,
         hp: 10000,
@@ -20,7 +25,7 @@ export default async function handle(session: Session, packet: Packet) {
         slot,
         sp: 10000
     };
-    session.player.setCurLineup(lineup);
+    session.player.setLineup(lineup);
     session.player.save();
 
     session.send("SyncLineupNotify", {

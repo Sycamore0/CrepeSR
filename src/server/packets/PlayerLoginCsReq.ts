@@ -43,23 +43,18 @@ export default async function handle(session: Session, packet: Packet) {
         Avatar.create(plr.db._id);
         plr.db.lineup = {
             curIndex: 0,
-            lineups: [{
-                avatarList: [{
-                    avatarType: AvatarType.AVATAR_FORMAL_TYPE,
-                    hp: 10000,
-                    sp: 10000,
-                    satiety: 100,
-                    slot: 0,
-                    id: 1001
-                }],
-                planeId: 10001,
-                isVirtual: false,
-                name: "Default Party",
-                index: 0,
-                leaderSlot: 0,
-                mp: 100,
-                extraLineupType: ExtraLineupType.LINEUP_NONE
-            }]
+            lineups: {
+                0: {
+                    avatarList: [1001],
+                    extraLineupType: ExtraLineupType.LINEUP_NONE,
+                    index: 0,
+                    isVirtual: false,
+                    leaderSlot: 0,
+                    mp: 100, // ?? Not sure what this is
+                    name: "Default Lineup",
+                    planeId: 10001
+                }
+            }
         }
         plr.save();
     }
