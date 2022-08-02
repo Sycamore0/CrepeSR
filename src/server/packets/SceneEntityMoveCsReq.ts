@@ -34,10 +34,6 @@ export default async function handle(session: Session, packet: Packet) {
             y: 0,
             z: 0,
         }
-        console.log("EntityMotion" + JSON.stringify(entityMotion, null, 2));
-        console.log("Entity" + JSON.stringify(entity.getSceneEntityInfo(), null, 2));
-        console.log("PlayerMotion" + JSON.stringify(session.player.db.posData));
-
     }
 
     session.send("SceneEntityMoveScRsp", {
