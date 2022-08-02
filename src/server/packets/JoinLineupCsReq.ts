@@ -25,6 +25,7 @@ export default async function handle(session: Session, packet: Packet) {
         slot,
         sp: 10000
     };
+    if (body.extraLineupType) lineup.extraLineupType = body.extraLineupType;
     session.player.setLineup(lineup);
     session.player.save();
 

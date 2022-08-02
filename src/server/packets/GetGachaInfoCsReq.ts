@@ -13,7 +13,7 @@ export default async function handle(session: Session, packet: Packet) {
             endTime: unix() * 2,
             newbieGachaCnt: 10,
             todayGachaCnt: 1,
-            gachaId: 763, // TODO: Figure out gachaIDs
+            gachaId: 502, // TODO: Figure out gachaIDs
             detailWebview: "https://omfgdogs.com/"
         }],
         todaySingleGachaMaxCnt: 10,
