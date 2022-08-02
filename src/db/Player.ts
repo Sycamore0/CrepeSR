@@ -1,5 +1,5 @@
 import Session from "../server/kcp/Session";
-import { ExtraLineupType, HeroBasicType, LineupInfo, Vector } from "../data/proto/StarRail";
+import { AvatarType, ExtraLineupType, HeroBasicType, LineupInfo, Vector } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Avatar from "./Avatar";
@@ -77,6 +77,15 @@ export default class Player {
         const avatars = await Avatar.fromLineup(this.uid, lineup);
         let slot = 0;
         avatars.forEach(avatar => {
+            // Fallback lineup
+            if (!avatar.lineup) avatar.lineup = {
+                avatarType: AvatarType.AVATAR_FORMAL_TYPE,
+                hp: 10000,
+                id: 1001,
+                satiety: 100,
+                slot: slot,
+                sp: 10000
+            }
             avatar.lineup.slot = slot++;
         });
         return {
