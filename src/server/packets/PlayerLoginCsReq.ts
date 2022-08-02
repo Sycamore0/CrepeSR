@@ -57,15 +57,12 @@ export default async function handle(session: Session, packet: Packet) {
             planeId: 10001
         }
         const LINEUPS = 6;
-        let slot = 0;
         plr.db.lineup = {
             curIndex: 0,
             lineups: {}
         }
         for (let i = 0; i <= LINEUPS; i++) {
-            const copy = baseLineup;
-            copy.index = slot++;
-            plr.db.lineup.lineups[i] = copy;
+            plr.db.lineup.lineups[i] = baseLineup;
         }
         plr.save();
     }
