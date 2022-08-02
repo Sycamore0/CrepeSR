@@ -22,7 +22,7 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as PlayerLoginCsReq;
 
-    const plr = await Player.fromUID(session.player.db._id);
+    const plr = await Player.fromUID(session, session.player.db._id);
     if (!plr) return;
 
     if (!plr.db.basicInfo) {
@@ -67,7 +67,12 @@ export default async function handle(session: Session, packet: Packet) {
     if (!plr.db.posData) {
         plr.db.posData = {
             floorID: 10001001,
-            planeID: 10001
+            planeID: 10001,
+            pos: {
+                x: 0,
+                y: 439,
+                z: -45507
+            }
         }
         plr.save();
     }

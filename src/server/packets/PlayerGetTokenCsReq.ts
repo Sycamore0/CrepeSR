@@ -27,7 +27,7 @@ export default async function handle(session: Session, packet: Packet) {
     const account = await Account.fromToken(body.token || "");
     if (!account) retWarn(`Account not found with token ${body.token}`);
 
-    const player = await Player.fromToken(account?.token || "");
+    const player = await Player.fromToken(session, account?.token || "");
     if (!player) retWarn(`Player not found with accountToken ${account?.token}`);
     if (!player || !account) {
         dataObj.retcode = 6;

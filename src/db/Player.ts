@@ -1,4 +1,6 @@
 import { LineupInfo, Vector } from "../data/proto/StarRail";
+import { Scene } from "../game/scene";
+import Session from "../server/kcp/Session";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Database from "./Database";
@@ -26,32 +28,34 @@ interface PlayerI {
     posData: {
         floorID: number;
         planeID: number;
-        pos?: Vector;
+        pos: Vector;
     }
 }
 
 export default class Player {
-    private constructor(public db: PlayerI) {
+    readonly scene: Scene;
 
+    private constructor(readonly session: Session, public db: PlayerI) {
+        this.scene = new Scene(this);
     }
 
-    public static async fromUID(uid: number | string): Promise<Player | undefined> {
+    public static async fromUID(session: Session, uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const db = Database.getInstance();
         const player = await db.get("players", { _id: uid }) as unknown as PlayerI;
-        if (!player) return Player.create(uid);
-        return new Player(player);
+        if (!player) return Player.create(session, uid);
+        return new Player(session, player);
     }
 
-    public static async fromToken(token: string): Promise<Player | undefined> {
+    public static async fromToken(session: Session, token: string): Promise<Player | undefined> {
         const db = Database.getInstance();
         const plr = await db.get("players", { token }) as unknown as PlayerI;
-        if (!plr) return Player.fromUID((await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
+        if (!plr) return Player.fromUID(session, (await Account.fromToken(token))?.uid || Math.round(Math.random() * 50000));
 
-        return new Player(plr);
+        return new Player(session, plr);
     }
 
-    public static async create(uid: number | string): Promise<Player | undefined> {
+    public static async create(session: Session, uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const acc = await Account.fromUID(uid);
         if (!acc) {
@@ -68,7 +72,7 @@ export default class Player {
         } as PlayerI
 
         await db.set("players", dataObj);
-        return new Player(dataObj);
+        return new Player(session, dataObj);
     }
 
     public async save() {
