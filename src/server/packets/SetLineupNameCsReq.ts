@@ -5,7 +5,7 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as SetLineupNameCsReq;
 
-    let curLineup = await session.player.getLineup();
+    const curLineup = await session.player.getLineup();
     curLineup.name = body.name;
     session.player.setLineup(curLineup);
     session.player.save();

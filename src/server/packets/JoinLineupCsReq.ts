@@ -8,7 +8,7 @@ export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as JoinLineupCsReq;
     session.send("JoinLineupScRsp", { retcode: 0 });
 
-    let lineup = await session.player.getLineup();
+    const lineup = await session.player.getLineup();
     const slot = body.slot || 0;
     const avatarList = [];
     for (const avatarId in lineup) {
