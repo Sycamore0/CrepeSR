@@ -46,20 +46,26 @@ export default async function handle(session: Session, packet: Packet) {
 
     if (!plr.db.lineup) {
         Avatar.create(plr.db._id);
+        const baseLineup = {
+            avatarList: [1001],
+            extraLineupType: ExtraLineupType.LINEUP_NONE,
+            index: 0,
+            isVirtual: false,
+            leaderSlot: 0,
+            mp: 100, // ?? Not sure what this is
+            name: "",
+            planeId: 10001
+        }
+        const LINEUPS = 4;
+        let slot = 0;
         plr.db.lineup = {
             curIndex: 0,
-            lineups: {
-                0: {
-                    avatarList: [1001],
-                    extraLineupType: ExtraLineupType.LINEUP_NONE,
-                    index: 0,
-                    isVirtual: false,
-                    leaderSlot: 0,
-                    mp: 100, // ?? Not sure what this is
-                    name: "Default Lineup",
-                    planeId: 10001
-                }
-            }
+            lineups: {}
+        }
+        for (let i = 0; i <= LINEUPS; i++) {
+            let copy = baseLineup;
+            copy.index = slot++;
+            plr.db.lineup.lineups[i] = copy;
         }
         plr.save();
     }

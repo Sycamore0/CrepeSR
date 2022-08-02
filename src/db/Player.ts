@@ -115,18 +115,7 @@ export default class Player {
             },
             lineup: {
                 curIndex: 0,
-                lineups: {
-                    0: {
-                        avatarList: [1001],
-                        extraLineupType: ExtraLineupType.LINEUP_NONE,
-                        index: 0,
-                        isVirtual: false,
-                        leaderSlot: 0,
-                        mp: 100, // ?? Not sure what this is
-                        name: "Default Lineup",
-                        planeId: 10001
-                    }
-                }
+                lineups: {}
             },
             posData: {
                 floorID: 10001001,
@@ -134,6 +123,28 @@ export default class Player {
             },
             banned: false
         } as PlayerI
+
+        const baseLineup = {
+            avatarList: [1001],
+            extraLineupType: ExtraLineupType.LINEUP_NONE,
+            index: 0,
+            isVirtual: false,
+            leaderSlot: 0,
+            mp: 100, // ?? Not sure what this is
+            name: "",
+            planeId: 10001
+        }
+        const LINEUPS = 4;
+        let slot = 0;
+        dataObj.lineup = {
+            curIndex: 0,
+            lineups: {}
+        }
+        for (let i = 0; i <= LINEUPS; i++) {
+            let copy = baseLineup;
+            copy.index = slot++;
+            dataObj.lineup.lineups[i] = copy;
+        }
 
         await db.set("players", dataObj);
         return new Player(dataObj);
