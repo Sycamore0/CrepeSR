@@ -20,19 +20,24 @@ export default async function handle(session: Session, packet: Packet) {
         if(!motion){
             continue;
         }
-        entity.pos = motion.pos!;
-        entity.rot = motion.rot ?? {
+        
+        if(motion.pos && (Object.keys(motion.pos!).length > 0)){ //preventing motion sending empty pos causing the pos to be reset
+            entity.pos = motion.pos;
+            if(entity instanceof ActorEntity){
+                entity.mapLayer = entityMotion.mapLayer;
+                session.player.db.posData.pos = motion.pos!;
+            }
+        }
+        
+        entity.rot = (Object.keys(motion.rot!).length > 0) ? motion.rot : {
             x: 0,
             y: 0,
             z: 0,
         }
         console.log("EntityMotion" + JSON.stringify(entityMotion, null, 2));
-        if(entity instanceof ActorEntity){
-            entity.mapLayer = entityMotion.mapLayer;
-            session.player.db.posData.pos = motion.pos!;
-            console.log("PlayerMotion" + JSON.stringify(session.player.db.posData));
-        }
         console.log("Entity" + JSON.stringify(entity.getSceneEntityInfo(), null, 2));
+        console.log("PlayerMotion" + JSON.stringify(session.player.db.posData));
+
     }
 
     session.send("SceneEntityMoveScRsp", {
