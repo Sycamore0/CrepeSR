@@ -62,7 +62,7 @@ export default class Avatar {
 
     public static async remove(ownerUid: UID, baseAvatarId: number): Promise<void> {
         const db = Database.getInstance();
-        await db.delete("avatars", { ownerUid, baseAvatarId });
+        await db.delete("avatars", { ownerUid, "data.baseAvatarId": baseAvatarId });
     }
 
 }

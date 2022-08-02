@@ -41,7 +41,7 @@ export default async function handle(command: Command) {
         }
         case "removeall": {
             for (const id in AvatarExcelTable) {
-                if (!(id == '1001')) {
+                if (Number(id) !== 1001) {
                     await Avatar.remove(uid, parseInt(id));
                 }
             }
