@@ -14,7 +14,9 @@ export default async function handle(session: Session, packet: Packet) {
             floor: {
                 floorId: mazeEntry.StartFloorID,
                 scene: {
-                    
+                    planeId: mazeEntry.PlaneID,
+                    floorId: mazeEntry.StartFloorID,
+                    gameModeType: 1,
                 }
             },
             id: mazeEntry.PlaneID,
