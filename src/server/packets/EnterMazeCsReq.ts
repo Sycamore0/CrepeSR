@@ -6,16 +6,23 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const body = packet.body as EnterMazeCsReq;
 
-    const mazeEntry = MazePlaneExcel.fromEntryId(body.entryId);
+    const mazeEntry = MazePlaneExcel.getEntry(body.entryId);
+
+    let curLineup = await session.player.getLineup();
+    curLineup.planeId = mazeEntry.PlaneID;
+    session.player.setLineup(curLineup);
+    session.player.db.posData.floorID = mazeEntry.FloorID;
+    session.player.db.posData.planeID = mazeEntry.PlaneID;
+    session.player.save();
 
     session.send("EnterMazeScRsp", {
         retcode: 0,
         maze: {
             floor: {
-                floorId: mazeEntry.StartFloorID,
+                floorId: mazeEntry.FloorID,
                 scene: {
                     planeId: mazeEntry.PlaneID,
-                    floorId: mazeEntry.StartFloorID,
+                    floorId: mazeEntry.FloorID,
                     gameModeType: 1,
                 }
             },

@@ -78,6 +78,7 @@ export default class Player {
         let slot = 0;
         avatars.forEach(avatar => {
             // Fallback lineup
+            if (!avatar) return; // Matsuko.
             if (!avatar.lineup) avatar.lineup = {
                 avatarType: AvatarType.AVATAR_FORMAL_TYPE,
                 hp: 10000,
