@@ -34,16 +34,18 @@ export default async function handle(command: Command) {
         }
         case "giveall": {
             for (const id in AvatarExcelTable) {
-                Avatar.create(uid, parseInt(id)).then(() => c.log(`All avatars added to ${uid}`));
+                await Avatar.create(uid, parseInt(id));
             }
+            c.log(`All avatars added to ${uid}`);
             break;
         }
         case "removeall": {
             for (const id in AvatarExcelTable) {
                 if (!(id == '1001')) {
-                    Avatar.remove(uid, parseInt(id)).then(() => c.log(`All avatars removed from ${uid}`));
+                    await Avatar.remove(uid, parseInt(id));
                 }
             }
+            c.log(`All avatars removed from ${uid}`);
             break;
         }
     }
