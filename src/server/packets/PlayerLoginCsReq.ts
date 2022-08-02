@@ -1,4 +1,4 @@
-import { AvatarType, ExtraLineupType, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import { AvatarType, ExtraLineupType, HeroBasicType, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
 import Avatar from "../../db/Avatar";
 import Player from "../../db/Player";
 import Packet from "../kcp/Packet";
@@ -24,6 +24,11 @@ export default async function handle(session: Session, packet: Packet) {
 
     const plr = await Player.fromUID(session.player.db._id);
     if (!plr) return;
+
+    if (!plr.db.heroBasicType) {
+        plr.db.heroBasicType = HeroBasicType.BoyWarrior;
+        plr.save();
+    }
 
     if (!plr.db.basicInfo) {
         plr.db.basicInfo = {

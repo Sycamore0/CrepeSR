@@ -1,4 +1,4 @@
-import { ExtraLineupType, LineupInfo, Vector } from "../data/proto/StarRail";
+import { ExtraLineupType, HeroBasicType, LineupInfo, Vector } from "../data/proto/StarRail";
 import Logger from "../util/Logger";
 import Account from "./Account";
 import Avatar from "./Avatar";
@@ -20,6 +20,7 @@ interface PlayerI {
     name: string;
     token: string;
     banned: boolean;
+    heroBasicType: HeroBasicType;
     basicInfo: {
         nickname: string;
         level: number;
@@ -101,6 +102,36 @@ export default class Player {
             _id: acc.uid,
             name: acc.name,
             token: acc.token,
+            heroBasicType: HeroBasicType.BoyWarrior,
+            basicInfo: {
+                exp: 0,
+                level: 1,
+                hcoin: 0,
+                mcoin: 0,
+                nickname: acc.name,
+                scoin: 0,
+                stamina: 100,
+                worldLevel: 1,
+            },
+            lineup: {
+                curIndex: 0,
+                lineups: {
+                    0: {
+                        avatarList: [1001],
+                        extraLineupType: ExtraLineupType.LINEUP_NONE,
+                        index: 0,
+                        isVirtual: false,
+                        leaderSlot: 0,
+                        mp: 100, // ?? Not sure what this is
+                        name: "Default Lineup",
+                        planeId: 10001
+                    }
+                }
+            },
+            posData: {
+                floorID: 10001001,
+                planeID: 10001
+            },
             banned: false
         } as PlayerI
 
