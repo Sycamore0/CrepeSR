@@ -1,4 +1,4 @@
-import { AvatarType, ExtraLineupType, HeroBasicType, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
+import { ExtraLineupType, HeroBasicType, PlayerBasicInfo, PlayerLoginCsReq, PlayerLoginScRsp } from "../../data/proto/StarRail";
 import Avatar from "../../db/Avatar";
 import Player from "../../db/Player";
 import Packet from "../kcp/Packet";

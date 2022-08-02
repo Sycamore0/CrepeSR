@@ -1,5 +1,6 @@
-import { GetCurSceneInfoScRsp, Vector } from "../../data/proto/StarRail";
+import { DailyTaskDataScNotify, GetCurSceneInfoScRsp, Vector } from "../../data/proto/StarRail";
 import { ActorEntity } from "../../game/entities/Actor";
+import DailyMissionDataExcel from "../../util/excel/DailyMissionDataExcel";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
@@ -25,4 +26,35 @@ export default async function handle(session: Session, packet: Packet) {
     } as unknown as GetCurSceneInfoScRsp);
     session.player.scene.spawnEntity(curAvatarEntity, true);
     session.player.scene.entryId = 10001;
+
+    // Daily Tasks
+    const dailyTasks = DailyMissionDataExcel.random();
+
+    const dataObj: DailyTaskDataScNotify = {
+        dailyTaskList: [{
+            mainMissionId: 3010201,
+            isFinished: false
+        },
+        {
+            mainMissionId: 3010202,
+            isFinished: false
+        },
+        {
+            mainMissionId: 3010203,
+            isFinished: false
+        },
+        {
+            mainMissionId: 3010204,
+            isFinished: false
+        },
+        {
+            mainMissionId: 3010205,
+            isFinished: false
+        }
+        ],
+        isTakenExtraReward: false,
+        finishedNum: 0
+    }
+
+    session.send("DailyTaskDataScNotify", dataObj);
 }
