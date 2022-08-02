@@ -134,7 +134,7 @@ export default class Player {
             name: "",
             planeId: 10001
         }
-        const LINEUPS = 4;
+        const LINEUPS = 6;
         let slot = 0;
         dataObj.lineup = {
             curIndex: 0,
