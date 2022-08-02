@@ -13,8 +13,8 @@ export default async function handle(command: Command) {
             return;
         }
 
-        Config.VERBOSE_LEVEL = level as unknown as VerboseLevel;
-        Logger.VERBOSE_LEVEL = level as unknown as VerboseLevel;
+        Config.VERBOSE_LEVEL = level as VerboseLevel;
+        Logger.VERBOSE_LEVEL = level as VerboseLevel;
         c.log(`VerboseLevel set to ${Config.VERBOSE_LEVEL} (${VerboseLevel[level]})`);
     }
 }
