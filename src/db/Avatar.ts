@@ -28,9 +28,10 @@ export default class Avatar {
     }
 
     public static async fromUID(ownerUid: UID, baseAvatarId?: number): Promise<Avatar[]> {
-        const query = { ownerUid } as { ownerUid: UID, baseAvatarId?: number };
-        if (baseAvatarId) query.baseAvatarId = baseAvatarId;
+        const query = { ownerUid } as { ownerUid: UID, "data.baseAvatarId"?: number };
+        if (baseAvatarId) query['data.baseAvatarId'] = baseAvatarId;
         const db = Database.getInstance();
+        console.debug(query)
         return await db.getAll("avatars", query) as unknown as Avatar[];
     }
 
