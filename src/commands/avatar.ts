@@ -16,7 +16,7 @@ export default async function handle(command: Command) {
 
     switch (actionType) {
         default: {
-            c.log(`Usage: /avatar <add|remove> <avatarId>`);
+            c.log(`Usage: /avatar <add|remove|giveall|removeall> <avatarId>`);
             break;
         }
         case "add": {
