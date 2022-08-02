@@ -56,7 +56,7 @@ export default async function handle(session: Session, packet: Packet) {
             name: "",
             planeId: 10001
         }
-        const LINEUPS = 4;
+        const LINEUPS = 6;
         let slot = 0;
         plr.db.lineup = {
             curIndex: 0,
