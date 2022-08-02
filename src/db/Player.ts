@@ -64,7 +64,7 @@ export default class Player {
         this.db.lineup.curIndex = curIndex;
     }
 
-    public static async create(uid: number | string): Promise<Player | undefined> {
+    public static async create(session: Session, uid: number | string): Promise<Player | undefined> {
         if (typeof uid == "string") uid = Number(uid);
         const acc = await Account.fromUID(uid);
         if (!acc) {

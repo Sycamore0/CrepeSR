@@ -24,6 +24,10 @@ export abstract class Entity{
                     z: 0,
                 },
             } as MotionInfo,
+            actor: {},
+            npc: {},
+            npcMonster: {},
+            prop: {}
         } as SceneEntityInfo;
     }
 }
