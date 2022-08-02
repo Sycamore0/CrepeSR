@@ -2,7 +2,7 @@
 import * as types from "../data/proto/StarRail";
 import protobufjs from "protobufjs";
 import { CmdID, PacketName } from "../server/kcp/Packet"
-import Logger from "./Logger";
+import Logger, { VerboseLevel } from "./Logger";
 const c = new Logger("ProtoFactory");
 
 class MessageType<T> {
@@ -56,7 +56,7 @@ export default class ProtoFactory {
             }
         }
 
-        c.debug(`Initialized with ${messageTypeMap.size} types`);
+        if (Logger.VERBOSE_LEVEL > VerboseLevel.ALL) c.log(`Initialized with ${messageTypeMap.size} types`);
 
         //c.log(this.getName(types.PlayerLoginScRsp))
         return;
