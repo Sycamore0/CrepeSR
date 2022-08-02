@@ -25,6 +25,15 @@ export default function handle(req: Request, res: Response) {
         dataObj.stopEndTime = Date.now() * 2;
     }
 
+    const url = new URL(`https://crepe.sr${req.originalUrl}`);
+    const query = new URLSearchParams(url.search);
+    const version = query.get("version");
+
+    if (version !== "OSGMWin0.70.0") {
+        dataObj.retcode = 2;
+        dataObj.msg = "Unknown StarRail version. Did you forget to update your client?\nSupport Discord: https://discord.gg/QYZxrcJkjH";
+    }
+
     let rsp;
     try {
         rsp = Gateserver.encode(dataObj).finish();
