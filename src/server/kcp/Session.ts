@@ -45,8 +45,6 @@ export default class Session {
             recv = this.kcpobj.recv();
             if (!recv) break;
 
-            this.c.debug(`recv ${recv.toString("hex")}`);
-
             if (Packet.isValid(recv)) {
                 this.handlePacket(new Packet(recv));
             }
@@ -58,6 +56,7 @@ export default class Session {
 
     public async handlePacket(packet: Packet) {
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(packet.protoName)
+        this.c.debug(packet.body);
 
         import(`../packets/${packet.protoName}`).then(mod => {
             mod.default(this, packet);
@@ -70,10 +69,10 @@ export default class Session {
     }
 
     public send(name: PacketName, body: {}) {
+        this.c.debug(body);
         const packet = Packet.encode(name, body);
         if (!packet) return;
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(packet.protoName);
-        this.c.debug(`send ${packet.rawData.toString('hex')}`);
         this.kcpobj.send(packet.rawData);
     }
 

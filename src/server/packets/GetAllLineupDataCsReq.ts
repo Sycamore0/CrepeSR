@@ -3,8 +3,10 @@ import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
 
 export default async function handle(session: Session, packet: Packet) {
+    const lineup = session.player.db.lineup;
     session.send("GetAllLineupDataScRsp", {
         retcode: 0,
-        lineupList: []
-    } as unknown as GetAllLineupDataScRsp);
+        curIndex: lineup.curIndex,
+        lineupList: lineup.lineups,
+    } as GetAllLineupDataScRsp);
 }
