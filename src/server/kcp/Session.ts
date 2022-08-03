@@ -130,6 +130,8 @@ export default class Session {
         this.c.verbH(packet.rawData);
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(packet.protoName);
         this.kcpobj.send(packet.rawData);
+        //i'll rename sendT to send once all instances are updated
+        this.c.warn("Session.send deprecated! migrate to Session.sendT");
     }
 
     public sendRaw(data: Buffer) {
