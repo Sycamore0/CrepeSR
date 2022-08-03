@@ -11,7 +11,7 @@ export default async function handle(session: Session, packet: Packet) {
     for (const entityMotion of body.entityMotionList) {
         const entity = session.player.scene.entities.get(entityMotion.entityId);
         if (!entity) { //what??
-            session.player.scene.despawnEntity(entityMotion.entityId);
+            // session.player.scene.despawnEntity(entityMotion.entityId);
             continue;
         }
         const motion = entityMotion.motion;
