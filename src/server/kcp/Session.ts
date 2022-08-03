@@ -118,6 +118,11 @@ export default class Session {
         SRServer.getInstance().handshake(HandshakeType.DISCONNECT, this.ctx);
     }
 
+
+    /**
+     * @deprecated The method should not be used
+     * use sendT instead
+     */
     public send(name: PacketName, body: {}) {
         this.c.verbL(body);
         const packet = Packet.encode(name, body);
