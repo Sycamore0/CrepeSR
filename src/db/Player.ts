@@ -91,6 +91,7 @@ export default class Player {
         });
         return {
             ...lineup,
+            index: 0,
             avatarList: avatars.map(x => x.lineup)
         }
     }
@@ -174,6 +175,7 @@ export default class Player {
 
     public async save() {
         const db = Database.getInstance();
+        c.debug(JSON.stringify(this.db, null, 2));
         await db.update("players", { _id: this.db._id }, this.db);
     }
 }
