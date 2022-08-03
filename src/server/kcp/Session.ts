@@ -80,10 +80,15 @@ export default class Session {
 
     public async sync() {
         const avatars = await Avatar.fromUID(this.player.db._id);
+        const inventory = await this.player.getInventory();
+
         this.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             avatarSync: {
-                avatarList: avatars.map(x => x.data),
+                avatarList: avatars.map(x => x.data)
             },
+            materialList: inventory.getMaterialList(),
+            equipmentList: inventory.getEquipmentList(),
+            relicList: inventory.getRelicsList(),
             basicInfo: this.player.db.basicInfo
         }));
 

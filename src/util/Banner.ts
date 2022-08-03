@@ -33,7 +33,7 @@ export default class Banners {
                 rateUpItems5: [
                     1102
                 ],
-                costItemId: -1 //unused for now
+                costItemId: 101 // Star Rail Pass
             } as Banner
         ];
 

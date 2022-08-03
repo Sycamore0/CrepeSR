@@ -5,6 +5,7 @@ import Account from "./Account";
 import Avatar from "./Avatar";
 import Database from "./Database";
 import { Scene } from "../game/Scene";
+import Inventory from "./Inventory";
 const c = new Logger("Player");
 
 export interface LineupI {
@@ -49,6 +50,7 @@ interface PlayerI {
 export default class Player {
     public readonly uid: number
     public readonly scene: Scene;
+    private inventory!: Inventory;
 
     private constructor(readonly session: Session, public db: PlayerI) {
         this.uid = db._id;
@@ -103,6 +105,15 @@ export default class Player {
         };
 
         this.db.lineup.curIndex = curIndex;
+    }
+
+    public async getInventory() : Promise<Inventory> {
+        // If this players inventory has not been loaded yet, do so now.
+        if (!this.inventory) {
+            this.inventory = await Inventory.loadOrCreate(this);
+        }
+
+        return this.inventory;
     }
 
     public static async create(session: Session, uid: number | string): Promise<Player | undefined> {
