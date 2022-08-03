@@ -7,7 +7,7 @@ export default async function handle(session: Session, packet: Packet) {
     session.send("GetGachaInfoScRsp", {
         gachaRandom: 0,
         retcode: 0,
-        gachaInfoList: Banner.banners.map(banner => {
+        gachaInfoList: Banner.config.map(banner => {
             return {
                 beginTime: 0,
                 endTime: 1924992000,
