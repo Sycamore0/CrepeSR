@@ -23,7 +23,7 @@ export default class Banners {
 
     private static readConfig(){
         let config: Banner[];
-        let defaultConfig: Banner[] = [
+        const defaultConfig: Banner[] = [
             {
                 gachaId: 1001,
                 detailWebview: "",
@@ -40,7 +40,7 @@ export default class Banners {
         try {
             config = JSON.parse(r('../../banners.json'));
             
-            for(let [index, gachaBanner] of Object.entries(config)){
+            for(const [index, gachaBanner] of Object.entries(config)){
                 const missing = Object.keys(defaultConfig[0]).filter(key => !gachaBanner.hasOwnProperty(key));
                 if (missing.length > 0) {
                     console.log(`Missing ${missing.join(', ')}, using default values. Backup of your older config: ${JSON.stringify(gachaBanner, null, 2)}`);
