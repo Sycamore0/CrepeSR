@@ -110,4 +110,3 @@ dist
 # CrepeSR
 config.json
 src/data/*
-banners.json

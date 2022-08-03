@@ -1,22 +1,21 @@
-import { GachaInfo, GetGachaInfoCsReq, GetGachaInfoScRsp } from "../../data/proto/StarRail";
+import { GetGachaInfoScRsp } from "../../data/proto/StarRail";
 import Packet from "../kcp/Packet";
 import Session from "../kcp/Session";
-import Banner from './../../util/Banner';
+
+const unix = () => Math.floor(Date.now() / 1000);
 
 export default async function handle(session: Session, packet: Packet) {
     session.send("GetGachaInfoScRsp", {
-        gachaRandom: 0,
+        gachaRandom: 2503,
         retcode: 0,
-        gachaInfoList: Banner.config.map(banner => {
-            return {
-                beginTime: 0,
-                endTime: 1924992000,
-                gachaId: banner.gachaId,
-                detailWebview: banner.detailWebview,
-                newbieGachaCnt: 0,
-                todayGachaCnt: 0
-            } as GachaInfo
-        }),
+        gachaInfoList: [{
+            beginTime: unix(),
+            endTime: unix() * 2,
+            newbieGachaCnt: 10,
+            todayGachaCnt: 10,
+            gachaId: 1001, // TODO: Figure out gachaIDs
+            detailWebview: "https://omfgdogs.com/"
+        }],
         todaySingleGachaMaxCnt: 10,
         todayTotalGachaCnt: 10,
     } as GetGachaInfoScRsp);
