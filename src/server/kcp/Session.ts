@@ -12,10 +12,12 @@ import { BlackLimitLevel, PlayerKickOutScNotify, PlayerKickOutScNotify_KickType,
 import Avatar from '../../db/Avatar';
 import SRServer from './SRServer';
 import { HandshakeType } from './Handshake';
+import ProtoFactory, { MessageType } from '../../util/ProtoFactory';
 
 function r(...args: string[]) {
     return fs.readFileSync(resolve(__dirname, ...args));
 }
+type UnWrapMessageType<T> = T extends MessageType<infer U> ? U : T;
 
 export default class Session {
     public key: Buffer = r('./initial.key');
@@ -78,20 +80,32 @@ export default class Session {
 
     public async sync() {
         const avatars = await Avatar.fromUID(this.player.db._id);
-        this.send("PlayerSyncScNotify", {
+        this.sendT(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             avatarSync: {
                 avatarList: avatars.map(x => x.data),
             },
             basicInfo: this.player.db.basicInfo
-        } as PlayerSyncScNotify);
+        }));
 
         this.player.save();
     }
 
+    public async sendT<Class extends MessageType<any>, >(type: Class, data: UnWrapMessageType<Class>) {
+        const encodedBuffer = type.encode(data).finish();
+        const typeName = ProtoFactory.getName(type);
+        this.c.verbL(data);
+        this.c.verbH(encodedBuffer);
+        if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(typeName);
+
+        //todo: might want to regen the ts-proto types with env = node
+        this.kcpobj.send(Buffer.from(encodedBuffer));
+    }
+
+
     public kick(hard: boolean = true) {
         SRServer.getInstance().sessions.delete(this.id);
         this.kicked = true;
-        if (hard) this.send("PlayerKickOutScNotify", {
+        if (hard) this.sendT(PlayerKickOutScNotify, {
             kickType: PlayerKickOutScNotify_KickType.KICK_BLACK,
             blackInfo: {
                 limitLevel: BlackLimitLevel.BLACK_LIMIT_LEVEL_ALL,
@@ -99,7 +113,7 @@ export default class Session {
                 endTime: Math.round(Date.now() / 1000),
                 banType: 2
             }
-        } as PlayerKickOutScNotify);
+        });
 
         SRServer.getInstance().handshake(HandshakeType.DISCONNECT, this.ctx);
     }
