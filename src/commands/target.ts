@@ -25,6 +25,10 @@ export default async function handle(command: Command) {
         c.log("No target specified");
         c.log("Possible targets: ");
         possibleTargets.forEach(x => c.trail(`${x.id} (UID: ${x.uid})`));
+        if(!possibleTargets[1] && possibleTargets[0]){
+            c.log(`Auto target the only session ${possibleTargets[0].uid}`);
+            Interface.target = possibleTargets[0].session;
+        } 
         return;
     }
 

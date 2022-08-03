@@ -7,7 +7,7 @@ const DEFAULT_CONFIG = {
     VERBOSE_LEVEL: 1,
 
     // MongoDB
-    MONGO_URI: "mongodb://localhost:27017/crepesr",
+    MONGO_URI: "mongodb://0.0.0.0:27017/crepesr",
 
     // HTTP
     HTTP: {
