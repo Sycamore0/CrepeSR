@@ -8,8 +8,10 @@ import Logger, { VerboseLevel } from '../../util/Logger';
 import defaultHandler from '../packets/PacketHandler';
 import Account from '../../db/Account';
 import Player from '../../db/Player';
-import { PlayerSyncScNotify } from '../../data/proto/StarRail';
+import { BlackLimitLevel, PlayerKickOutScNotify, PlayerKickOutScNotify_KickType, PlayerSyncScNotify } from '../../data/proto/StarRail';
 import Avatar from '../../db/Avatar';
+import SRServer from './SRServer';
+import { HandshakeType } from './Handshake';
 
 function r(...args: string[]) {
     return fs.readFileSync(resolve(__dirname, ...args));
@@ -20,18 +22,21 @@ export default class Session {
     public c: Logger;
     public account!: Account;
     public player!: Player;
-    public constructor(private readonly kcpobj: KCP.KCP, public readonly ctx: RemoteInfo) {
-        this.kcpobj = kcpobj;
+    public kicked = false;
+
+    public constructor(private kcpobj: KCP.KCP, public readonly ctx: RemoteInfo, public id: string) {
         this.ctx = ctx;
         this.c = new Logger(`${this.ctx.address}:${this.ctx.port}`, 'yellow');
         this.update();
     }
 
     public inputRaw(data: Buffer) {
+        if (this.kicked) return;
         this.kcpobj.input(data);
     }
 
     public async update() {
+        if (this.kicked) return;
         if (!this.kcpobj) {
             console.error("wtf kcpobj is undefined");
             console.debug(this)
@@ -79,8 +84,24 @@ export default class Session {
             },
             basicInfo: this.player.db.basicInfo
         } as PlayerSyncScNotify);
-        
+
         this.player.save();
+    }
+
+    public kick(hard: boolean = true) {
+        SRServer.getInstance().sessions.delete(this.id);
+        this.kicked = true;
+        if (hard) this.send("PlayerKickOutScNotify", {
+            kickType: PlayerKickOutScNotify_KickType.KICK_BLACK,
+            blackInfo: {
+                limitLevel: BlackLimitLevel.BLACK_LIMIT_LEVEL_ALL,
+                beginTime: Math.round(Date.now() / 1000),
+                endTime: Math.round(Date.now() / 1000),
+                banType: 2
+            }
+        } as PlayerKickOutScNotify);
+
+        SRServer.getInstance().handshake(HandshakeType.DISCONNECT, this.ctx);
     }
 
     public send(name: PacketName, body: {}) {
@@ -93,6 +114,7 @@ export default class Session {
     }
 
     public sendRaw(data: Buffer) {
+        if (this.kicked) return;
         this.kcpobj.send(data);
     }
 }
