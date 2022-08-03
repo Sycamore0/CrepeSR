@@ -15,10 +15,12 @@ class MessageType<T> {
     //fromjson etc...
 }
 
+type UnWrapMessageType<T> = T extends MessageType<infer U> ? U : T;
+
 const messageTypeMap = new Map<PacketName, MessageType<any>>();
 const messageTypeMapReversed = new Map<MessageType<any>, PacketName>();
 
-function send<Class extends MessageType<T>, T>(type: Class, data: T) {
+function send<Class extends MessageType<any>, >(type: Class, data: UnWrapMessageType<Class>) {
     console.log(type.encode(data).finish())
 }
 
@@ -59,10 +61,10 @@ export default class ProtoFactory {
         if (Logger.VERBOSE_LEVEL > VerboseLevel.ALL) c.log(`Initialized with ${messageTypeMap.size} types`);
 
         //c.log(this.getName(types.PlayerLoginScRsp))
-        return;
+        // return;
 
         //if you want a partial type
-        send(types.PlayerLoginScRsp, types.PlayerLoginScRsp.fromPartial({
+        send(types.PlayerLoginScRsp, {
             basicInfo: {
                 exp: 0,
                 level: 1,
@@ -77,7 +79,11 @@ export default class ProtoFactory {
             stamina: 100,
             curTimezone: 1,
             serverTimestampMs: Math.round(new Date().getTime() / 1000),
-        }))
+            bsBinVersion: "1.0.0",
+            retcode: 0,
+            isRelay: false,
+            loginRandom: 0,
+        });
     }
 }
 
