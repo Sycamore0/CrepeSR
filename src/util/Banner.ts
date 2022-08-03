@@ -30,17 +30,17 @@ function r(...args: string[]) {
 }
 
 
-function readConfig(): any {
+function readConfig(): BannersConfig {
     let config: BannersConfig;
     try {
         config = JSON.parse(r('../../banners.json'));
         
-        for(const [index, gachaBanner] of Object.entries(config)){
+        for(let [index, gachaBanner] of Object.entries(config)){
             const missing = Object.keys(BANNERS[0]).filter(key => !gachaBanner.hasOwnProperty(key));
             if (missing.length > 0) {
-                console.log(missing)
+                console.log(`Missing ${missing.join(', ')}, using default values. Backup of your older config: ${JSON.stringify(gachaBanner, null, 2)}`);
+                config[parseInt(index)] = BANNERS[0];
                 updateConfig(config);
-                console.log(`Added missing banners keys: ${missing.join(', ')}`);
             }
         }
     } catch {
@@ -51,7 +51,7 @@ function readConfig(): any {
     return config;
 }
 
-function updateConfig(config: any) {
+function updateConfig(config: BannersConfig) {
     fs.writeFileSync('./banners.json', JSON.stringify(config, null, 2));
 }
 

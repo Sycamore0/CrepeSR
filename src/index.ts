@@ -6,11 +6,13 @@
 import Interface from "./commands/Interface";
 import HttpServer from "./http/HttpServer";
 import SRServer from "./server/kcp/SRServer";
+import Banners from "./util/Banner";
 import Logger from "./util/Logger";
 import ProtoFactory from "./util/ProtoFactory"
 
 const c = new Logger("CrepeSR");
 c.log(`Starting CrepeSR...`);
+Banners.config
 ProtoFactory.init();
 Interface.start();
 HttpServer.getInstance().start();
