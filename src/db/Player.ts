@@ -155,14 +155,13 @@ export default class Player {
             planeId: 10001
         }
         const LINEUPS = 6;
-        let slot = 0;
         dataObj.lineup = {
             curIndex: 0,
             lineups: {}
         }
         for (let i = 0; i <= LINEUPS; i++) {
             const copy = baseLineup;
-            copy.index = slot++;
+            copy.index = 0;
             dataObj.lineup.lineups[i] = copy;
         }
 
