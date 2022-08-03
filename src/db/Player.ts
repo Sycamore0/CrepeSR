@@ -163,6 +163,7 @@ export default class Player {
         for (let i = 0; i <= LINEUPS; i++) {
             const copy = baseLineup;
             copy.index = 0;
+            copy.name = `Team ${i}`;
             dataObj.lineup.lineups[i] = copy;
         }
 
