@@ -59,4 +59,8 @@ export default class MazePlaneExcel {
     public static getEntry(entryId: number): MapEntryExcelTableEntry {
         return MapEntryExcelTable[entryId.toString()];
     }
+
+    public static getAllEntries(): MapEntryExcelTableEntry[] {
+        return Object.values(MapEntryExcelTable);
+    }
 }
