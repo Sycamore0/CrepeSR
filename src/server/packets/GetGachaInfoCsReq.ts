@@ -12,11 +12,11 @@ export default async function handle(session: Session, packet: Packet) {
             beginTime: unix(),
             endTime: unix() * 2,
             newbieGachaCnt: 10,
-            todayGachaCnt: 1,
-            gachaId: 502, // TODO: Figure out gachaIDs
+            todayGachaCnt: 10,
+            gachaId: 1001, // TODO: Figure out gachaIDs
             detailWebview: "https://omfgdogs.com/"
         }],
         todaySingleGachaMaxCnt: 10,
-        todayTotalGachaCnt: 1,
+        todayTotalGachaCnt: 10,
     } as GetGachaInfoScRsp);
 }
