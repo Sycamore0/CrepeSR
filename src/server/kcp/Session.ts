@@ -80,32 +80,33 @@ export default class Session {
 
     public async sync() {
         const avatars = await Avatar.fromUID(this.player.db._id);
-        this.sendT(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
+        this.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             avatarSync: {
                 avatarList: avatars.map(x => x.data),
             },
             basicInfo: this.player.db.basicInfo
         }));
 
-        this.player.save();
+        //this.player.save();
     }
 
-    public async sendT<Class extends MessageType<any>, >(type: Class, data: UnWrapMessageType<Class>) {
-        const encodedBuffer = type.encode(data).finish();
+    public async send<Class extends MessageType<any>, >(type: Class, data: UnWrapMessageType<Class>) {
         const typeName = ProtoFactory.getName(type);
+        const encodedBuffer = type.encode(type.fromPartial(data)).finish();
+        const packet = Packet.fromEncodedBuffer(Buffer.from(encodedBuffer), typeName);
         this.c.verbL(data);
         this.c.verbH(encodedBuffer);
+        if(!encodedBuffer) console.log("sad!")
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(typeName);
-
         //todo: might want to regen the ts-proto types with env = node
-        this.kcpobj.send(Buffer.from(encodedBuffer));
+        this.kcpobj.send(packet);
     }
 
 
     public kick(hard: boolean = true) {
         SRServer.getInstance().sessions.delete(this.id);
         this.kicked = true;
-        if (hard) this.sendT(PlayerKickOutScNotify, {
+        if (hard) this.send(PlayerKickOutScNotify, {
             kickType: PlayerKickOutScNotify_KickType.KICK_BLACK,
             blackInfo: {
                 limitLevel: BlackLimitLevel.BLACK_LIMIT_LEVEL_ALL,
@@ -118,21 +119,6 @@ export default class Session {
         SRServer.getInstance().handshake(HandshakeType.DISCONNECT, this.ctx);
     }
 
-
-    /**
-     * @deprecated The method should not be used
-     * use sendT instead
-     */
-    public send(name: PacketName, body: {}) {
-        this.c.verbL(body);
-        const packet = Packet.encode(name, body);
-        if (!packet) return;
-        this.c.verbH(packet.rawData);
-        if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(packet.protoName);
-        this.kcpobj.send(packet.rawData);
-        //i'll rename sendT to send once all instances are updated
-        this.c.warn("Session.send deprecated! migrate to Session.sendT");
-    }
 
     public sendRaw(data: Buffer) {
         if (this.kicked) return;

@@ -18,5 +18,5 @@ export default async function handle(session: Session, packet: Packet) {
         lineupList
     } as GetAllLineupDataScRsp;
 
-    session.send("GetAllLineupDataScRsp", dataObj);
+    session.send(GetAllLineupDataScRsp, dataObj);
 }

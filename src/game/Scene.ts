@@ -13,7 +13,7 @@ export class Scene {
     public spawnEntity(entity: Entity, silent: boolean = false) {
         this.entities.set(entity.entityId, entity);
         if (!silent) {
-            this.player.session.send("SceneEntityUpdateScNotify", {
+            this.player.session.send(SceneEntityUpdateScNotify, {
                 entityList: [entity.getSceneEntityInfo()]
             } as SceneEntityUpdateScNotify);
         }
@@ -22,7 +22,7 @@ export class Scene {
     public despawnEntity(entityId: number, silent: boolean = false) {
         this.entities.delete(entityId);
         if (!silent) {
-            this.player.session.send("SceneEntityDisappearScNotify", {
+            this.player.session.send(SceneEntityDisappearScNotify, {
                 entityIdList: [entityId]
             } as SceneEntityDisappearScNotify);
         }

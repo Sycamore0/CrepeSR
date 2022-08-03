@@ -4,7 +4,7 @@ import Session from "../kcp/Session";
 import Banner from './../../util/Banner';
 
 export default async function handle(session: Session, packet: Packet) {
-    session.send("GetGachaInfoScRsp", {
+    session.send(GetGachaInfoScRsp, {
         gachaRandom: 0,
         retcode: 0,
         gachaInfoList: Banner.config.map(banner => {

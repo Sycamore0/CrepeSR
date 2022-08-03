@@ -14,7 +14,7 @@ export default async function handle(session: Session, packet: Packet) {
         session.c.error("Failed to set lineup name", false);
     }
 
-    session.send("SetLineupNameScRsp", {
+    session.send(SetLineupNameScRsp, {
         retcode: 0,
         index: session.player.db.lineup.curIndex,
         name: body.name

@@ -82,7 +82,7 @@ export default async function handle(session: Session, packet: Packet) {
         plr.save();
     }
 
-    session.send("PlayerLoginScRsp", {
+    session.send(PlayerLoginScRsp, {
         basicInfo: plr!.db.basicInfo as PlayerBasicInfo,
         isNewPlayer: false,
         stamina: 100,

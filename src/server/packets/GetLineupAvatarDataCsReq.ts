@@ -42,5 +42,5 @@ export default async function handle(session: Session, packet: Packet) {
         });
     }
 
-    session.send("GetLineupAvatarDataScRsp", dataObj);
+    session.send(GetLineupAvatarDataScRsp, dataObj);
 }

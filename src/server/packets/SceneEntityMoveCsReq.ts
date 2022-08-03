@@ -34,7 +34,7 @@ export default async function handle(session: Session, packet: Packet) {
         }
     }
 
-    session.send("SceneEntityMoveScRsp", {
+    session.send(SceneEntityMoveScRsp, {
         retcode: 0,
         downloadData: undefined,
     } as SceneEntityMoveScRsp);

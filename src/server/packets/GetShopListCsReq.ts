@@ -37,5 +37,5 @@ export default async function handle(session: Session, packet: Packet) {
         dataObj.shopList.push(shopObj);
     });
 
-    session.send("GetShopListScRsp", dataObj);
+    session.send(GetShopListScRsp, dataObj);
 }

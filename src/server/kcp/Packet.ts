@@ -68,6 +68,20 @@ export default class Packet {
             process.exit(1);
         }
     }
+
+    public static fromEncodedBuffer(data: Buffer, name: PacketName): Buffer {
+        const cmdid = CmdID[name];
+        const packet = Buffer.allocUnsafe(16 + data.length);
+        packet.writeUInt32BE(0x1234567);
+        packet.writeUint16BE(cmdid, 4);
+        packet.writeUint16BE(0, 6);
+        packet.writeUint32BE(data.length, 8);
+        data.copy(packet, 12);
+        packet.writeUint32BE(0x89abcdef, 12 + data.length);
+        return packet;
+    }
+
+
 }
 
 export type PacketName = keyof typeof CmdID;

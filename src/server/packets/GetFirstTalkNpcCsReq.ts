@@ -19,5 +19,5 @@ export default async function handle(session: Session, packet: Packet) {
         dataObj.npcMeetStatusList.push(meetStatusObj);
     });
 
-    session.send("GetFirstTalkNpcScRsp", dataObj);
+    session.send(GetFirstTalkNpcScRsp, dataObj);
 }

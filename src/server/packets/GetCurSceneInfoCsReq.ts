@@ -8,7 +8,7 @@ export default async function handle(session: Session, packet: Packet) {
     const _lineup = session.player.db.lineup;
     const lineup = _lineup.lineups[_lineup.curIndex];
     const curAvatarEntity = new ActorEntity(session.player.scene, lineup.avatarList[0], posData.pos);
-    session.send("GetCurSceneInfoScRsp", {
+    session.send(GetCurSceneInfoScRsp, {
         retcode: 0,
         scene: {
             planeId: posData.planeID,

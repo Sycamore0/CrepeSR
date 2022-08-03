@@ -8,7 +8,7 @@ export default async function handle(session: Session, packet: Packet) {
 
     // TODO: This packet is just a base
 
-    session.send("StartChallengeScRsp", {
+    session.send(StartChallengeScRsp, {
         retcode: 0,
         curChallenge: {
             challengeId: body.challengeId,

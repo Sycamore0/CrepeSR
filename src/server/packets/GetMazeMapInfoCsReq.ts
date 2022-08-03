@@ -26,5 +26,5 @@ export default async function handle(session: Session, packet: Packet) {
 
     dataObj.unlockTeleportList = MazePlaneExcel.getAllEntries().map(x => x.ID);
 
-    session.send("GetMazeMapInfoScRsp", dataObj);
+    session.send(GetMazeMapInfoScRsp, dataObj);
 }

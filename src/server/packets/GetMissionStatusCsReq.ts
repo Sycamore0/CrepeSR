@@ -54,5 +54,5 @@ export default async function handle(session: Session, packet: Packet) {
         });
     });
 
-    session.send("GetMissionStatusScRsp", dataObj);
+    session.send(GetMissionStatusScRsp, dataObj);
 }

@@ -32,7 +32,7 @@ export default async function handle(command: Command) {
         return;
     }
 
-    const autoTarget = findBestMatch(target, possibleTargets.map(x => x.id)).bestMatch.target;
+    const autoTarget = findBestMatch(target, possibleTargets.map(x => x.id))?.bestMatch.target;
 
     Interface.target = possibleTargets.find(x => x.id === autoTarget)!.session;
 

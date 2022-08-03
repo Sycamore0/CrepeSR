@@ -14,5 +14,5 @@ export default async function handle(session: Session, packet: Packet) {
         reward: { itemList: [] }
     }
 
-    session.send("FinishTutorialGuideScRsp", dataObj);
+    session.send(FinishTutorialGuideScRsp, dataObj);
 }

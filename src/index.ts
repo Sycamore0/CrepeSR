@@ -12,8 +12,9 @@ import ProtoFactory from "./util/ProtoFactory"
 
 const c = new Logger("CrepeSR");
 c.log(`Starting CrepeSR...`);
+
 Banners.init();
 ProtoFactory.init();
-Interface.start();
+Interface.start(); 
 HttpServer.getInstance().start();
 SRServer.getInstance().start();

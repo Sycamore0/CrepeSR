@@ -10,5 +10,5 @@ export default async function handle(session: Session, packet: Packet) {
         messageGroupList: [],
     };
 
-    session.send("GetNpcMessageGroupScRsp", dataObj);
+    session.send(GetNpcMessageGroupScRsp, dataObj);
 }

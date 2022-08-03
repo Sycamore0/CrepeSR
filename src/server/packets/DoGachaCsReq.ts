@@ -22,7 +22,7 @@ export default async function handle(session: Session, packet: Packet) {
             isNew: true //TODO: avatar checking
         } as GachaItem);
     }
-    session.send("DoGachaScRsp", {
+    session.send(DoGachaScRsp, {
         retcode: 0,
         gachaId: body.gachaId!,
         gachaNum: body.gachaNum!,

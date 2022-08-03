@@ -19,5 +19,5 @@ export default async function handle(session: Session, packet: Packet) {
         });
     });
 
-    session.send("GetChallengeScRsp", dataObj);
+    session.send(GetChallengeScRsp, dataObj);
 }

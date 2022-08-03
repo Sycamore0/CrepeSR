@@ -5,7 +5,7 @@ import Session from "../kcp/Session";
 export default async function handle(session: Session, packet: Packet) {
     const lineup = await session.player.getLineup();
 
-    session.send("GetCurBattleInfoScRsp", {
+    session.send(GetCurBattleInfoScRsp, {
         retcode: 0,
         avatarList: lineup.avatarList.map(list => {
             return {

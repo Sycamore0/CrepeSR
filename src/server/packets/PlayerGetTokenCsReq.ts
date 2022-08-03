@@ -21,7 +21,7 @@ export default async function handle(session: Session, packet: Packet) {
 
     const dataObj = {
         retcode: 0,
-        secretKeySeed: 0
+        secretKeySeed: 0,
     } as PlayerGetTokenScRsp;
 
     const account = await Account.fromToken(body.token || "");
@@ -46,5 +46,5 @@ export default async function handle(session: Session, packet: Packet) {
     }
 
     dataObj.uid = player.db._id;
-    session.send("PlayerGetTokenScRsp", dataObj);
+    session.send(PlayerGetTokenScRsp, dataObj);
 }

@@ -15,7 +15,7 @@ export default async function handle(session: Session, packet: Packet) {
     session.player.db.posData.planeID = mazeEntry.PlaneID;
     session.player.save();
 
-    session.send("EnterMazeScRsp", {
+    session.send(EnterMazeScRsp, {
         retcode: 0,
         maze: {
             floor: {

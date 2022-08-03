@@ -30,7 +30,7 @@ export default async function handle(session: Session, packet: Packet) {
         session.player.save();
     }
 
-    session.send("GetCurLineupDataScRsp", {
+    session.send(GetCurLineupDataScRsp, {
         retcode: 0,
         lineup: {
             ...lineup,
