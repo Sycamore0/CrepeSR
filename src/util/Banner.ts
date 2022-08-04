@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { resolve } from 'path';
-import { VerboseLevel } from './Logger';
+import Logger from './Logger';
+const c = new Logger("Banner");
 
 type Banner = {
     gachaId: number,
@@ -43,19 +44,19 @@ export default class Banners {
             for(const [index, gachaBanner] of Object.entries(config)){
                 const missing = Object.keys(defaultConfig[0]).filter(key => !gachaBanner.hasOwnProperty(key));
                 if (missing.length > 0) {
-                    console.log(`Missing ${missing.join(', ')}, using default values. Backup of your older config: ${JSON.stringify(gachaBanner, null, 2)}`);
+                    c.log(`Missing ${missing.join(', ')}, using default values.`);
                     config[parseInt(index)] = defaultConfig[0];
                 }
             }
             Banners.updateConfig(config);
         } catch {
-            console.error("Could not read banners file. Creating one for you...");
+            c.error("Could not read banners file. Creating one for you...");
             Banners.updateConfig(defaultConfig);
         }
     }
     
     private static updateConfig(config: Banner[]) {
         this.config = config;
-        fs.writeFileSync('./banners.json', JSON.stringify(config, null, 2));
+        fs.writeFileSync(r('../../banners.json'), JSON.stringify(config, null, 2));
     }
 }
