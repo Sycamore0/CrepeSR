@@ -1,13 +1,11 @@
 import Logger from "../util/Logger";
 import { ActorEntity } from "../game/entities/Actor";
 import Interface, { Command } from "./Interface";
-import Database from "../db/Database";
 import { GetCurSceneInfoScRsp } from "../data/proto/StarRail";
-import Session from "../server/kcp/Session";
 import MazePlaneExcel from "../util/excel/MazePlaneExcel";
 const c = new Logger("/scene", "blue");
 
-export default async function handle(command: Command, session: Session) {
+export default async function handle(command: Command) {
     if (!Interface.target) {
         c.log("No target specified");
         return;
@@ -23,8 +21,8 @@ export default async function handle(command: Command, session: Session) {
     if (!planeID) return c.log("Usage: /scene <planeID>");
 
     Interface.target.player.db.posData = {
-        floorID: Number(planeID!.StartFloorID),
-        planeID: Number(planeID!.PlaneID),
+        floorID: planeID.StartFloorID,
+        planeID: planeID.PlaneID,
         pos: Interface.target.player.db.posData.pos
     };
     await Interface.target.player.save()
@@ -33,8 +31,8 @@ export default async function handle(command: Command, session: Session) {
     Interface.target.send(GetCurSceneInfoScRsp, {
         retcode: 0,
         scene: {
-            planeId: Number(planeID!.PlaneID),
-            floorId: Number(planeID!.StartFloorID),
+            planeId: planeID.PlaneID,
+            floorId: planeID.StartFloorID,
             entityList: [
                 curAvatarEntity
             ],
@@ -48,4 +46,6 @@ export default async function handle(command: Command, session: Session) {
     Interface.target.player.scene.spawnEntity(curAvatarEntity, true);
 
     Interface.target.sync();
+
+    c.log(`Scene set to PlaneID: ${planeID.PlaneID}`);
 }
