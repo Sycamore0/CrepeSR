@@ -12,7 +12,7 @@ type Banner = {
 }
 
 function r(...args: string[]) {
-    return fs.readFileSync(resolve(__dirname, ...args)).toString();
+    return resolve(__dirname, ...args);
 }
 
 export default class Banners {
@@ -39,7 +39,7 @@ export default class Banners {
         ];
 
         try {
-            config = JSON.parse(r('../../banners.json'));
+            config = JSON.parse(fs.readFileSync(r('../../banners.json')).toString());
             
             for(const [index, gachaBanner] of Object.entries(config)){
                 const missing = Object.keys(defaultConfig[0]).filter(key => !gachaBanner.hasOwnProperty(key));
