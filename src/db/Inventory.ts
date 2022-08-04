@@ -3,7 +3,6 @@ import Logger from "../util/Logger";
 import Database from "./Database";
 import Player from "./Player";
 import ItemExcel from "../util/excel/ItemExcel";
-import { Timestamp } from "mongodb";
 
 const c = new Logger("Inventory");
 
@@ -165,10 +164,6 @@ export default class Inventory {
         if (!itemData || itemData.ItemType != "Material") {
             return;
         }
-        const t = itemData.ItemType;
-        if (t != "Material") {
-            return;
-        }
 
         // Get current item count for this ID and calculate new count.
         const currentCount = this.db.materials[id] ?? 0;
@@ -189,6 +184,11 @@ export default class Inventory {
     public async addEquipment(equipment: number | Equipment) {
         // If the parameter is a number, add a new equipment with this item ID as base.
         if (typeof(equipment) == "number") {
+            // Sanity check.
+            if (ItemExcel.fromId(equipment)?.ItemType != "Equipment") {
+                return;
+            }
+
             const equip : Equipment = {
                 tid: equipment,
                 uniqueId: this.db.nextItemUid++,
@@ -292,6 +292,9 @@ export default class Inventory {
         // Find index to delete.
         const toDelete: number = (typeof(equipment) == "number") ? equipment : equipment.uniqueId;
         const index = this.db.equipments.findIndex(i => i.uniqueId == toDelete);
+        if (index == -1) {
+            return;
+        }
 
         // Delete and save.
         this.db.equipments.splice(index, 1);
@@ -309,6 +312,9 @@ export default class Inventory {
         // Find index to delete.
         const toDelete: number = (typeof(relic) == "number") ? relic : relic.uniqueId;
         const index = this.db.relics.findIndex(i => i.uniqueId == toDelete);
+        if (index == -1) {
+            return;
+        }
 
         // Delete and save.
         this.db.relics.splice(index, 1);

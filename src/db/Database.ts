@@ -28,7 +28,7 @@ export default class Database {
             const _collection = db.collection(collection);
             if (!(await db.listCollections({ name: collection }).toArray()).length) {
                 c.warn(`Collection ${collection} does not exist. Creating...`);
-                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+                await _collection.createIndexes([{ key: { _id: 1 } }]);
             }
             const result = query ? await _collection.findOne(query) : await _collection.findOne();
             return result;
@@ -44,7 +44,7 @@ export default class Database {
             const _collection = db.collection(collection);
             if (!(await db.listCollections({ name: collection }).toArray()).length) {
                 c.warn(`Collection ${collection} does not exist. Creating...`);
-                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+                await _collection.createIndexes([{ key: { _id: 1 } }]);
             }
             const result = query ? await _collection.find(query).toArray() : await _collection.find().toArray();
             return result;
@@ -60,10 +60,12 @@ export default class Database {
             const _collection = db.collection(collection);
             if (!(await db.listCollections({ name: collection }).toArray()).length) {
                 c.warn(`Collection ${collection} does not exist. Creating...`);
-                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+                await _collection.createIndexes([{ key: { _id: 1 } }]);
             }
             return await _collection.insertOne(payload);
         } catch (e) {
+            c.error("In set.")
+            c.error(payload)
             c.error(e as Error);
         }
     }
@@ -74,7 +76,7 @@ export default class Database {
             const _collection = db.collection(collection);
             if (!(await db.listCollections({ name: collection }).toArray()).length) {
                 c.warn(`Collection ${collection} does not exist. Creating...`);
-                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+                await _collection.createIndexes([{ key: { _id: 1 } }]);
             }
             return await _collection.deleteOne(query);
         } catch (e) {
@@ -88,7 +90,7 @@ export default class Database {
             const _collection = db.collection(collection);
             if (!(await db.listCollections({ name: collection }).toArray()).length) {
                 c.warn(`Collection ${collection} does not exist. Creating...`);
-                await _collection.createIndexes([{ key: { id: 1 }, unique: true }]);
+                await _collection.createIndexes([{ key: { _id: 1 } }]);
             }
             return await _collection.updateOne(query, { $set: payload }, { upsert: true });
         } catch (e) {
