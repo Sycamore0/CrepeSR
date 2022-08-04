@@ -144,6 +144,11 @@ export default class Avatar {
         return res;
     }
 
+    public async save() {
+        const db = Database.getInstance();
+        await db.update("avatars", { ownerUid: this.player.uid, baseAvatarId: this.db.baseAvatarId }, this.db);
+    }
+
     /********************************************************************************
         Get avatar info.
     ********************************************************************************/
