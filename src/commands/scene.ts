@@ -22,8 +22,11 @@ export default async function handle(command: Command, session: Session) {
 
     if (!planeID) return c.log("Usage: /scene <planeID>");
 
-    const db = Database.getInstance();
-    await db.update('players',{_id:uid},{posData: { floorID: Number(planeID!.StartFloorID), planeID: Number(planeID!.PlaneID)}})
+    Interface.target.player.db.posData = {
+        floorID: Number(planeID!.StartFloorID),
+        planeID: Number(planeID!.PlaneID),
+        pos: Interface.target.player.db.posData.pos
+    };
     await Interface.target.player.save()
 
     //ty for tamilpp25 scene

@@ -36,7 +36,7 @@ export default async function handle(session: Session, packet: Packet) {
     session.player.setLineup(lineup);
     */
    
-    session.player.save();
+    await session.player.save();
 
     session.send(SyncLineupNotify, {
         lineup: await session.player.getLineup(),

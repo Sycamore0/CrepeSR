@@ -64,8 +64,6 @@ export default class Database {
             }
             return await _collection.insertOne(payload);
         } catch (e) {
-            c.error("In set.")
-            c.error(payload)
             c.error(e as Error);
         }
     }

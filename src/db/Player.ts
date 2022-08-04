@@ -94,7 +94,7 @@ export default class Player {
 
         return {
             ...lineup,
-            index: 0,
+            index: index,
             avatarList: lineupAvatars
         }
     }
@@ -172,7 +172,7 @@ export default class Player {
         for (let i = 0; i < LINEUPS; i++) {
             const copy = {
                 ...baseLineup,
-                index: 0,
+                index: i,
                 name: `Team ${i}`
             };
             dataObj.lineup.lineups[i] = copy;
