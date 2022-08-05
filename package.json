@@ -12,6 +12,7 @@
     "express": "^4.18.1",
     "mongodb": "^4.8.0",
     "node-kcp-token": "github:memetrollsxd/node-kcp",
-    "protobufjs": "^7.0.0"
+    "protobufjs": "^7.0.0",
+    "typescript": "^4.7.4"
   }
 }
