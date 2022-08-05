@@ -80,7 +80,6 @@ export default class Session {
 
     public async sync() {
         const avatars = await Avatar.loadAvatarsForPlayer(this.player);
-        //const avatars = await Avatar.fromUID(this.player.db._id);
         const inventory = await this.player.getInventory();
 
         this.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
@@ -92,8 +91,6 @@ export default class Session {
             relicList: inventory.getRelicsList(),
             basicInfo: this.player.db.basicInfo
         }));
-
-        //this.player.save();
     }
 
     public async send<Class extends MessageType<any>,>(type: Class, data: UnWrapMessageType<Class>) {

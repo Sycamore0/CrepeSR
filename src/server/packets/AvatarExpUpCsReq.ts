@@ -65,9 +65,9 @@ export default async function handle(session: Session, packet: Packet) {
 
     // Calculate the character's new EXP and any excess EXP.
     let excessExp = 0;
-    if (avatar.db.level == levelCap && currentAvatarExp >= nextRequiredExp) {
-        avatar.db.exp = nextRequiredExp;
-        excessExp = currentAvatarExp - nextRequiredExp;
+    if (avatar.db.level == levelCap) {
+        avatar.db.exp = 0;
+        excessExp = currentAvatarExp;
     }
     else {
         avatar.db.exp = currentAvatarExp;

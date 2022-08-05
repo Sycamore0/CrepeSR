@@ -119,6 +119,15 @@ export default class Inventory {
         return 0;
     }
 
+    /**
+     * Fetch the equipment with the given unique ID from the player's inventory.
+     * @param uniqueId The unique ID of the equipment to fetch.
+     * @returns The `Equipment` with the given unique ID, or `undefined` if the player does not have that equipment.
+     */
+    public getEquipmentByUid(uniqueId: number) {
+        return this.db.equipments.filter(e => e.uniqueId == uniqueId)?.[0];
+    }
+
     /********************************************************************************
         Add items to the inventory.
     ********************************************************************************/
@@ -376,17 +385,28 @@ export default class Inventory {
     /********************************************************************************
         Player updating.
     ********************************************************************************/
-    private sendMaterialUpdate() {
+   /**
+    * Send `PlayerSyncScNotify` for materials.
+    */
+    public sendMaterialUpdate() {
         this.player.session.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             materialList: this.getMaterialList()
         }));
     }
-    private sendEquipmentUpdate() {
+
+    /**
+    * Send `PlayerSyncScNotify` for equipments.
+    */
+    public sendEquipmentUpdate() {
         this.player.session.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             equipmentList: this.getEquipmentList()
         }));
     }
-    private sendRelicUpdate() {
+
+    /**
+    * Send `PlayerSyncScNotify` for relics.
+    */
+    public sendRelicUpdate() {
         this.player.session.send(PlayerSyncScNotify, PlayerSyncScNotify.fromPartial({
             relicList: this.getRelicsList()
         }));
