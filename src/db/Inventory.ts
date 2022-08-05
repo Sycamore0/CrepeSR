@@ -101,8 +101,19 @@ export default class Inventory {
         }
 
         switch (itemData.ItemType) {
-            case "Virtual": return 0; // ToDo: Handle virtual items.
+            case "Virtual": return this.getVirtualItemCount(id);
             case "Material": return this.db.materials[id] ?? 0;
+        }
+
+        return 0;
+    }
+
+    private getVirtualItemCount(id: number) : number {
+        // ToDo: Figure out which virtual item ID is what.
+        switch (id) {
+            case 2:
+                return this.player.db.basicInfo.scoin;
+                break;
         }
 
         return 0;
@@ -151,6 +162,14 @@ export default class Inventory {
      */
     public async addVirtualItem(id: number, count: number) {
         // ToDo: Figure out which virtual item ID is what.
+        switch (id) {
+            case 2:
+                this.player.db.basicInfo.scoin += count;
+                break;
+        }
+
+        // Save.
+        this.player.save();
     }
 
     /**
