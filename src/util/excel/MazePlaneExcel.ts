@@ -55,6 +55,10 @@ export default class MazePlaneExcel {
     public static fromPlaneId(planeId: number): MazePlaneExcelTableEntry {
         return MazePlaneExcelTable[planeId.toString()];
     }
+    
+    public static fromFloorId(floorId: number): MazePlaneExcelTableEntry {
+        return MazePlaneExcelTable[floorId.toString().slice(0,5)];
+    }
 
     public static getEntry(entryId: number): MapEntryExcelTableEntry {
         return MapEntryExcelTable[entryId.toString()];
