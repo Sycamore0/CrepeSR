@@ -137,13 +137,13 @@ export default class Player {
             heroBasicType: HeroBasicType.BoyWarrior,
             basicInfo: {
                 exp: 0,
-                level: 1,
+                level: 70,
                 hcoin: 0,
                 mcoin: 0,
                 nickname: acc.name,
                 scoin: 0,
-                stamina: 100,
-                worldLevel: 1,
+                stamina: 180,
+                worldLevel: 6,
             },
             lineup: {
                 curIndex: 0,
