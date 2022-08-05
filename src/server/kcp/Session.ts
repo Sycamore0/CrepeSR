@@ -96,13 +96,13 @@ export default class Session {
         //this.player.save();
     }
 
-    public async send<Class extends MessageType<any>, >(type: Class, data: UnWrapMessageType<Class>) {
+    public async send<Class extends MessageType<any>,>(type: Class, data: UnWrapMessageType<Class>) {
         const typeName = ProtoFactory.getName(type);
         const encodedBuffer = type.encode(type.fromPartial(data)).finish();
         const packet = Packet.fromEncodedBuffer(Buffer.from(encodedBuffer), typeName);
         this.c.verbL(data);
         this.c.verbH(encodedBuffer);
-        if(!encodedBuffer) console.log("sad!")
+        if (!encodedBuffer) this.c.error("encodedBuffer is undefined");
         if (Logger.VERBOSE_LEVEL >= VerboseLevel.WARNS) this.c.log(typeName);
         //todo: might want to regen the ts-proto types with env = node
         this.kcpobj.send(packet);
@@ -112,6 +112,7 @@ export default class Session {
     public kick(hard: boolean = true) {
         SRServer.getInstance().sessions.delete(this.id);
         this.kicked = true;
+
         if (hard) this.send(PlayerKickOutScNotify, {
             kickType: PlayerKickOutScNotify_KickType.KICK_BLACK,
             blackInfo: {
