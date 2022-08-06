@@ -1,3 +1,3 @@
 # CrepeSR
 
-[Discord](https://discord.gg/crepe)
+[Discord](https://discord.gg/KA4HqktWYG)
