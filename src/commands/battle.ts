@@ -17,6 +17,10 @@ export default async function handle(command: Command) {
     }
 
     const player = Interface.target.player;
+    if (player.db.posData.planeID != 20101) {
+        c.log("For now, this only works on plane 20101, please teleport there first.");
+    }
+
     const inventory = await player.getInventory();
     const avatars = await Avatar.getAvatarsForLineup(player, player.db.lineup.lineups[player.db.lineup.curIndex]);
     const monsters = command.args.map(arg => Number(arg));
