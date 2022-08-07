@@ -18,7 +18,7 @@ export default async function handle(command: Command) {
 
     const player = Interface.target.player;
     if (player.db.posData.planeID != 20101) {
-        c.log("For now, this only works on plane 20101, please teleport there first.");
+        c.log("For now, this is only confirmed to work on plane 20101, please teleport there first.");
     }
 
     const inventory = await player.getInventory();
