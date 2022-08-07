@@ -11,7 +11,11 @@ export default async function handle(command: Command) {
         return;
     }
 
-    // 102202001
+    if (command.args.length == 0) {
+        c.log("Usage: /battle <monsterId>+");
+        return;
+    }
+
     const player = Interface.target.player;
     const inventory = await player.getInventory();
     const avatars = await Avatar.getAvatarsForLineup(player, player.db.lineup.lineups[player.db.lineup.curIndex]);
