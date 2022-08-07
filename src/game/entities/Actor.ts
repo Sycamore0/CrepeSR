@@ -10,15 +10,16 @@ export class ActorEntity extends Entity
         super(scene, pos, rot);
     }
 
-    public getSceneEntityInfo(): SceneEntityInfo {
-        const sceneEntityInfo = super.getSceneEntityInfo();
-        sceneEntityInfo.actor = {
-            avatarType: AvatarType.AVATAR_FORMAL_TYPE,
-            baseAvatarId: this.avatarId,
-            uid: this.scene.player.db._id,
-            mapLayer: 0 //?
+    public getSceneActorInfo(): SceneEntityInfo {
+        return {
+            ...super.getSceneEntityInfo(),
+            actor: {
+                avatarType: AvatarType.AVATAR_FORMAL_TYPE,
+                baseAvatarId: this.avatarId,
+                uid: this.scene.player.db._id,
+                mapLayer: 0 //?
+            }
         };
-        return sceneEntityInfo;
     }
 
     public getEntityType(): EntityType {

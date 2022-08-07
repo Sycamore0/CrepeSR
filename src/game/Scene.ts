@@ -13,9 +13,11 @@ export class Scene {
     public spawnEntity(entity: Entity, silent: boolean = false) {
         this.entities.set(entity.entityId, entity);
         if (!silent) {
-            this.player.session.send(SceneEntityUpdateScNotify, {
+            const dataObj : SceneEntityUpdateScNotify = {
                 entityList: [entity.getSceneEntityInfo()]
-            } as SceneEntityUpdateScNotify);
+            };
+
+            this.player.session.send(SceneEntityUpdateScNotify, dataObj);
         }
     }
 

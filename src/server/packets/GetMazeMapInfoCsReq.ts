@@ -1,4 +1,5 @@
 import { GetMazeMapInfoCsReq, GetMazeMapInfoScRsp } from "../../data/proto/StarRail";
+import MapEntryExcel from "../../util/excel/MapEntryExcel";
 import MappingInfoExcel from "../../util/excel/MappingInfoExcel";
 import MazePlaneExcel from "../../util/excel/MazePlaneExcel";
 import Packet from "../kcp/Packet";
@@ -24,7 +25,7 @@ export default async function handle(session: Session, packet: Packet) {
         dataObj.lightenSectionList.push(i)
     }
 
-    dataObj.unlockTeleportList = MazePlaneExcel.getAllEntries().map(x => x.ID);
+    dataObj.unlockTeleportList = MapEntryExcel.all().map(x => x.ID);
 
     session.send(GetMazeMapInfoScRsp, dataObj);
 }

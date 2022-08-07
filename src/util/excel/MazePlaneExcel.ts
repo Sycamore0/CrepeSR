@@ -1,5 +1,5 @@
-import _MapEntryExcelTable from "../../data/excel/MapEntryExcelTable.json";
 import _MazePlaneExcelTable from "../../data/excel/MazePlaneExcelTable.json";
+import MapEntryExcel from "./MapEntryExcel";
 
 interface MazePlaneExcelTableEntry {
     PlaneID: number;
@@ -11,44 +11,13 @@ interface MazePlaneExcelTableEntry {
     FloorIDList: number[];
 }
 
-interface TextMap {
-    hash: number;
-}
-
-type EntranceType = "Town" | "Mission" | "Explore";
-
-interface MapEntryExcelTableEntry {
-    ID: number;
-    IsShowInMapMenu: boolean;
-    MapMenuSortID: number;
-    EntranceType: EntranceType | number; // Actually an enum. Town | Mission | Explore
-    EntranceGroupID: number;
-    Name: TextMap;
-    Desc: TextMap;
-    EntranceListIcon: string;
-    ImagePath: string;
-    MiniMapIconHintList: any[];
-    ShowReward: number;
-    PlaneID: number;
-    FloorID: number;
-    StartGroupID: number;
-    StartAnchorID: number;
-    TargetMission: number;
-    TargetMainMissionList: number[];
-    BeginMainMissionList: number[];
-    FinishMainMissionList: number[];
-    FinishQuestList: number[];
-    UnlockQuest: number;
-}
-
 const MazePlaneExcelTable = _MazePlaneExcelTable as { [key: string]: MazePlaneExcelTableEntry };
-const MapEntryExcelTable = _MapEntryExcelTable as { [key: string]: MapEntryExcelTableEntry };
 
 export default class MazePlaneExcel {
     private constructor() { }
 
     public static fromEntryId(entryId: number): MazePlaneExcelTableEntry {
-        const mapEntry = MapEntryExcelTable[entryId.toString()];
+        const mapEntry = MapEntryExcel.fromId(entryId);
         return MazePlaneExcelTable[mapEntry.PlaneID.toString()];
     }
 
@@ -56,11 +25,21 @@ export default class MazePlaneExcel {
         return MazePlaneExcelTable[planeId.toString()];
     }
 
-    public static getEntry(entryId: number): MapEntryExcelTableEntry {
-        return MapEntryExcelTable[entryId.toString()];
-    }
+    public static getGameModeForPlaneType(planeType: string): number {
+        switch (planeType) {
+            case "Town": return 1;
+            case "Maze": return 2;
+            case "Train": return 3;
+            case "Challenge": return 4;
+            case "RogueExplore": return 5;
+            case "RogueChallenge": return 6;
+            case "TownRoom": return 7;
+            case "Raid": return 8;
+            case "FarmRelic": return 9;
+            case "Client": return 10;
+            case "ChallengeActivity": return 11;
+        }
 
-    public static getAllEntries(): MapEntryExcelTableEntry[] {
-        return Object.values(MapEntryExcelTable);
+        return 0;
     }
 }
