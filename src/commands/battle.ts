@@ -50,17 +50,18 @@ export default async function handle(command: Command) {
                     equipmentList: equipData,
                     hp: avatar.db.fightProps.hp,
                     id: avatar.db.baseAvatarId,
+                    sp: avatar.db.fightProps.sp,
                     index: i,
                     level: avatar.db.level,
                     promotion: avatar.db.promotion,
                     rank: avatar.db.rank,
                     relicList: [],
                     skilltreeList: []
-                } as unknown as BattleAvatar;
+                };
             }),
-            buffList: [] as BattleBuff[],
+            buffList: new Array<BattleBuff>(),
             battleId: 0,
-            heroPathList: [] as HeroPath[],
+            heroPathList: new Array<HeroPath>(),
             roundsLimit: 100
         } as SceneBattleInfo
     } as StartCocoonStageScRsp);
