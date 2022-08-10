@@ -1,5 +1,6 @@
-import { GetCurSceneInfoScRsp, MotionInfo, SceneEntityInfo, SceneNpcMonsterInfo, Vector } from "../../data/proto/StarRail";
+import { GetCurSceneInfoScRsp, MotionInfo, SceneEntityInfo, SceneNpcMonsterInfo, StartCocoonStageCsReq, Vector } from "../../data/proto/StarRail";
 import { ActorEntity } from "../../game/entities/Actor";
+import { PropEntity } from "../../game/entities/Prop";
 import MapEntryExcel from "../../util/excel/MapEntryExcel";
 import MazePlaneExcel from "../../util/excel/MazePlaneExcel";
 import Packet from "../kcp/Packet";
@@ -18,14 +19,15 @@ export default async function handle(session: Session, packet: Packet) {
     session.player.scene.spawnEntity(curAvatarEntity, true);
     session.player.scene.entryId = entryId;
 
-    // Send response.
-    session.send(GetCurSceneInfoScRsp, {
+    // Build response.
+    const dataObj : GetCurSceneInfoScRsp = {
         retcode: 0,
         scene: {
             planeId: posData.planeID,
             floorId: posData.floorID,
             entityList: [
-                curAvatarEntity.getSceneEntityInfo()
+                curAvatarEntity.getSceneEntityInfo(),
+                
             ],
             lightenSectionList: [],
             leaderEntityId: curAvatarEntity.entityId,
@@ -33,6 +35,9 @@ export default async function handle(session: Session, packet: Packet) {
             entryId: entryId,
             envBuffList: [],
             gameModeType: MazePlaneExcel.getGameModeForPlaneType(mazePlane.PlaneType),
-        },
-    } as GetCurSceneInfoScRsp);
+        }
+    };
+
+    // Send response.
+    session.send(GetCurSceneInfoScRsp, dataObj);
 }
